@@ -1,0 +1,27 @@
+<!--Navigation Bar-->
+
+<ul class="nav-bar">
+    <li class="nav-bar-item">
+        <a href="/">Home</a>
+    </li>
+
+    <!--Check if logged in and change navbar.-->
+    <% if (!loggedin) { %> 
+        <li class="nav-bar-item">
+            <a href="/Login.ejs">Login</a>
+        </li>
+        
+        <li class="nav-bar-item">
+            <a href="/Register.ejs">Register</a>
+        </li>
+    <% } else { %>
+        <li class="nav-bar-item">
+            <a href="/Account.ejs">Account</a>
+        </li>
+
+        <li class="nav-bar-item">
+            <a href="/Logout">Logout</a>
+        </li>
+    <% } %>
+
+</ul>
