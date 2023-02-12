@@ -12,13 +12,17 @@ function createWorkerInput() {
     item.innerHTML = `
         <!--Label for time period of work.-->
         <label for="timePeriod${workerInputCount}">Time period of work:</label>
-        `;
+    `;
 
+    //Get element to append to.
     let workers = document.getElementById('workers');
     workers.appendChild(item);
+
+    //Increase the count.
     workerInputCount++;
 }
 
+//Add event listener to the button.
 window.addEventListener('load', () => {
     document.getElementById('addWorker').addEventListener('click', createWorkerInput);
 });
