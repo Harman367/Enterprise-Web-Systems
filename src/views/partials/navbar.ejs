@@ -6,17 +6,17 @@
     </li>
 
     <!--Check if logged in and change navbar.-->
-    <% if (!loggedin) { %> 
+    <% if (!locals.loggedin) { %> 
         <li class="nav-bar-item">
-            <a href="/Login.ejs">Login</a>
+            <a href="/Login">Login</a>
         </li>
         
         <li class="nav-bar-item">
-            <a href="/Register.ejs">Register</a>
+            <a href="/Register">Register</a>
         </li>
     <% } else { %>
         <li class="nav-bar-item">
-            <a href="/Account.ejs">Account</a>
+            <a href="/Account">Account</a>
         </li>
 
         <li class="nav-bar-item">
