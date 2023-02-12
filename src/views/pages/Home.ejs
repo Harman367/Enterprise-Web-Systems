@@ -17,7 +17,31 @@
 
         <!--Main-->
         <main>
+            <!--Page Heading-->
+            <div>
+                <h1>Quote Calculator</h1>
+                <p>Enter your details below to get a quote!</p>  
+            </div>
 
+            <!--Quote Calculator Form-->
+            <div>
+                <form id="quote-calculator" action="javascript:calculateQuote()">
+                    <!--Workers-->
+                    <label for="Worker">Worker(s)</label>
+                    <button id="addWorker" type="button">+ Worker</button>
+
+                    <div id="workers">
+
+                    </div>
+
+                    <!--Button and Output-->
+                    <div class="button-holder">
+                        <button id="button-home">Calculate Quote!</button>
+                        <label for="" id="finalQuote">?????</label>
+                        <label for="" id="quoteExplained">?????</label>
+                    </div>
+                </form>
+            </div>
         </main>
 
         <!--Footer-->
