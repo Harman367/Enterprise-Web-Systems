@@ -1,0 +1,7 @@
+#login-form:not(.show) {
+    display: none;
+}
+
+#register-form:not(.show) {
+    display: none;
+}
