@@ -10,10 +10,10 @@ const port = process.env.PORT || 3000;
 app.set("port", port);
 
 //Set up static folder.
-app.use(express.static("public"));
+app.use(express.static("src/public"));
 
 //Set up view folder.
-app.set("views", "views");
+app.set("views", "src/views");
 
 //Set up view engine.
 app.set("view engine", "ejs");
