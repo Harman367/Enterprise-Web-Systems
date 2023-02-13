@@ -1,27 +1,93 @@
 <!--Navigation Bar-->
 
-<ul class="nav-bar">
-    <li class="nav-bar-item">
-        <a href="/">Home</a>
+<ul class="navbar">
+    <li class="navbar-item">
+        <a href="/">
+            <!--Home Icon-->
+            <i class="fa-solid fa-house"></i> Home
+        </a>
     </li>
 
     <!--Check if logged in and change navbar.-->
     <% if (!locals.loggedin) { %> 
-        <li class="nav-bar-item">
-            <a href="/Login">Login</a>
-        </li>
+        <!--Login Button-->
+        <div class="dropdown">
+            <button class="drop-button" onclick="openDropdown('login-form')">
+                <i class="fa-solid fa-right-to-bracket"></i> Login
+            </button>  
+
+            <!--Login Form-->
+            <div id="login-form">
+                <form action="/Login" method="post">
+                    <!--Username-->
+                    <label for="username">Username:</label>
+                    <input type="text" name="username" id="username">
+
+                    <!--Password-->
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" id="password">
+
+                    <!--Login Button-->
+                    <input type="submit" value="Login">
+                </form>
+            </div>
+        </div>
         
-        <li class="nav-bar-item">
-            <a href="/Register">Register</a>
-        </li>
+        <!--Register Button-->
+        <div class="dropdown">
+            <button class="drop-button" onclick="openDropdown('register-form')">
+                <i class="fa-solid fa-address-card"></i> Register
+            </button>
+
+            <!--Register Form-->
+            <div id="register-form">
+                <form action="/Register" method="post">
+                    <!--First Name-->
+                    <label for="firstName">First Name:</label>
+                    <input type="text" name="firstName" id="firstName">
+
+                    <!--Last Name-->
+                    <label for="lastName">Last Name:</label>
+                    <input type="text" name="lastName" id="lastName">
+
+                    <!--Email-->
+                    <label for="email">Email:</label>
+                    <input type="email" name="email" id="email">
+
+                    <!--Company-->
+                    <label for="company">Company:</label>
+                    <input type="text" name="company" id="company">
+
+                    <!--Username-->
+                    <label for="username">Username:</label>
+                    <input type="text" name="username" id="username">
+
+                    <!--Password-->
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" id="password">
+
+                    <!--Confirm Password-->
+                    <label for="password">Confirm Password:</label>
+                    <input type="password" name="password" id="password">
+
+                    <!--Register Button-->
+                    <input type="submit" value="Register">
+                </form>
+        </div>
+
     <% } else { %>
-        <li class="nav-bar-item">
-            <a href="/Account">Account</a>
+        <!--Account Button-->
+        <li class="navbar-item">
+            <a href="/Account">
+                <i class="fa-solid fa-user"></i> Account
+            </a>
         </li>
 
-        <li class="nav-bar-item">
-            <a href="/Logout">Logout</a>
+        <!--Logout Button-->
+        <li class="navbar-item">
+            <a href="/Logout">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout
+            </a>
         </li>
     <% } %>
-
 </ul>
