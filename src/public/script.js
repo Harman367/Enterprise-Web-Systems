@@ -26,3 +26,9 @@ function createWorkerInput() {
 window.addEventListener('load', () => {
     document.getElementById('addWorker').addEventListener('click', createWorkerInput);
 });
+
+
+//Function to open thre dropdown menu on click.
+function openDropdown(id) {
+    document.getElementById(id).classList.toggle("show");
+}
