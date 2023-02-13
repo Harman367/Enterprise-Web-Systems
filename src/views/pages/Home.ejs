@@ -19,28 +19,102 @@
         <main>
             <!--Page Heading-->
             <div>
-                <h1>Quote Calculator</h1>
+                <h1>Project Quote Calculator</h1>
                 <p>Enter your details below to get a quote!</p>  
             </div>
 
-            <!--Quote Calculator Form-->
+            <!--Project Quote Calculator Form-->
             <div>
-                <form id="quote-calculator" action="javascript:calculateQuote()">
+                <form id="quote-calculator" action="calculateQuote()">
                     <!--Workers-->
-                    <label for="Worker">Worker(s)</label>
+                    <h2>Worker(s)</h2>
                     <button id="addWorker" type="button">+ Worker</button>
 
                     <!--Append workers-->
                     <div id="workers">
-                    
+                        <div>
+                            <!--Time required and units of time-->
+                            <label for="timeRequired">Time Required:</label>
+                            <input type="number" name="timeRequired" id="timeRequired" min="1">
+                            <select name="units" id="units">
+                                <option value="hours">Hours</option>
+                                <option value="days">Days</option>
+                                <option value="weeks">Weeks</option>
+                                <option value="months">Months</option>
+                            </select>
+
+                            <!--Worker Rate-->
+                            <label for="rate">Worker Rate:</label>
+                            <select name="rate" id="rate">
+                                <option value="Junior">Junior</option>
+                                <option value="Standard">Standard</option>
+                                <option value="Senior">Senior</option>
+                            </select>
+
+                            <!--Number of Workers-->
+                            <label for="numWorkers">Number of Workers:</label>
+                            <input type="number" name="numWorkers" id="numWorkers" min="1">
+                        </div>
+                    </div>
+
+                    <!--Ongoing Cost-->
+                    <h2>Ongoing Costs</h2>
+                    <button id="addOngoing" type="button">+ Ongoing Cost</button>
+
+                    <!--Append ongoing costs-->
+                    <div id="ongoingCosts">
+                        <div>
+                            <!--Cost Name-->
+                            <label for="costName">Cost Name:</label>
+                            <input type="text" name="costName" id="costName">
+
+                            <!--Cost Amount-->
+                            <label for="costAmount">Cost Amount:</label>
+                            <input type="number" name="costAmount" id="costAmount" min="1">
+
+                            <!--Cost Frequency-->
+                            <label for="costFrequency">Cost Frequency:</label>
+                            <select name="costFrequency" id="costFrequency">
+                                <option value="hours">Hours</option>
+                                <option value="days">Days</option>
+                                <option value="weeks">Weeks</option>
+                                <option value="months">Months</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!--One Off Cost-->
+                    <h2>One Off Costs</h2>
+                    <button id="addOneOff" type="button">+ One Off Cost</button>
+
+                    <!--Append one off costs-->
+                    <div id="oneOffCosts">
+                        <div>
+                            <!--Cost Name-->
+                            <label for="costName">Cost Name:</label>
+                            <input type="text" name="costName" id="costName">
+
+                            <!--Cost Amount-->
+                            <label for="costAmount">Cost Amount:</label>
+                            <input type="number" name="costAmount" id="costAmount" min="1">
+                        </div>
                     </div>
 
                     <!--Button and Output-->
                     <div class="button-holder">
                         <button id="button-home">Calculate Quote!</button>
-                        <label for="" id="finalQuote">?????</label>
-                        <label for="" id="quoteExplained">?????</label>
+                        <h3 id="finalQuote">?????</h3>
+                        <h3 id="quoteExplained">?????</h3>
                     </div>
+
+                    <!--Save Project Quote-->
+                    <% if (locals.loggedin) { %>
+                        <div class="button-holder">
+                            <label for="quoteName">Project Quote Name:</label>
+                            <input type="text" name="quoteName" id="quoteName">
+                            <button id="button-save">Save Quote</button>
+                        </div>
+                    <% } %>
                 </form>
             </div>
         </main>
