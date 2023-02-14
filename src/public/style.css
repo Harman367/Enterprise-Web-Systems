@@ -1,7 +1,22 @@
+/*Navbar*/
+
+/*Hide dropdown form*/
 #login-form:not(.show) {
     display: none;
 }
 
+/*Hide dropdown form*/
 #register-form:not(.show) {
     display: none;
+}
+
+/*Solid border around the login form*/
+.dropdown-content > form {
+    border-style: solid;
+}
+
+/*Forms show above all other elements*/
+.dropdown-content {
+    position: absolute;
+    background-color: #f9f9f9;
 }
