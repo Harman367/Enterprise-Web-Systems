@@ -1,32 +1,48 @@
-//Variables.
-workerInputCount = 0;
+//Home page script------------------------------------------------------------------------------------
 
 //Function to create label and input field for a worker.
-function createWorkerInput() {
+function createInput(inputs, appendTo, temp) {
     //Create item.
     const item = document.createElement('div');
-    item.id = 'workerInput' + workerInputCount;
-    item.className = 'workerInput';
+    item.className = inputs;
 
-    //Create the labels and input fields.
-    item.innerHTML = `
-        <!--Label for time period of work.-->
-        <label for="timePeriod${workerInputCount}">Time period of work:</label>
-    `;
+    //Get template.
+    const template = document.getElementById(temp);
+    const content = template.content.cloneNode(true);
+
+    //Append template to item.
+    item.appendChild(content);
 
     //Get element to append to.
-    let workers = document.getElementById('workers');
+    let workers = document.getElementById(appendTo);
     workers.appendChild(item);
+}
 
-    //Increase the count.
-    workerInputCount++;
+//Function to remove a input field.
+function removeInput(element) {
+    element.parentElement.remove();
 }
 
 //Add event listener to the button.
 window.addEventListener('load', () => {
-    document.getElementById('addWorker').addEventListener('click', createWorkerInput);
+    //Add event listener to the add worker button.
+    document.getElementById('addWorker').addEventListener('click', e => {
+        createInput('worker', 'workers', 'workerTemplate');
+    });
+
+    //Add event listener to the add ongoing cost button.
+    document.getElementById('addOngoing').addEventListener('click', e => {
+        createInput('ongoingCost', 'ongoingCosts', 'ongoingTemplate');
+    });
+
+    //Add event listener to the add one off cost button.
+    document.getElementById('addOneOff').addEventListener('click', e => {
+        createInput('oneOffCost', 'oneOffCosts', 'oneOffTemplate');
+    });
 });
 
+
+//Navbar script-------------------------------------------------------------------------------------
 
 //Function to open thre dropdown menu on click.
 function openDropdown(id) {
