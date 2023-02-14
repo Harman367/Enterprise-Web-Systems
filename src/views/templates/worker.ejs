@@ -1,0 +1,29 @@
+<!-- Worker template -->
+
+<template id="workerTemplate">
+    <!--Time required and units of time-->
+    <div>
+        <input type="number" name="timeRequired" id="timeRequired" min="1">
+        <select name="units" id="units">
+            <option value="hours">Hours</option>
+            <option value="days">Days</option>
+            <option value="weeks">Weeks</option>
+            <option value="months">Months</option>
+        </select>
+    </div>
+
+    <!--Worker Rate-->                            
+    <select name="rate" id="rate">
+        <option value="Junior">Junior</option>
+        <option value="Standard">Standard</option>
+        <option value="Senior">Senior</option>
+    </select>
+
+    <!--Number of Workers-->
+    <input type="number" name="numWorkers" id="numWorkers" min="1">
+
+    <!--Remove worker button-->
+    <button type="button" id="removeWorker" onclick="removeInput(this)">
+        <i class="fa-solid fa-xmark"></i>
+    </button>
+</template>
