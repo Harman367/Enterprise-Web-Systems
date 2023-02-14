@@ -29,7 +29,6 @@
                     <!--Workers-->
                     <h2>Worker(s)</h2>
                     <button id="addWorker" type="button">+ Worker</button>
-                    <button id="removeWorker" type="button">- Worker</button>
 
                     <!--Append workers-->
                     <div id="workers">
@@ -38,7 +37,7 @@
                         <label for="rate">Rate:</label>
                         <label for="numWorkers">Amount:</label>
 
-                        <div>
+                        <div class="worker">
                             <!--Time required and units of time-->
                             <div>
                                 <input type="number" name="timeRequired" id="timeRequired" min="1">
@@ -49,7 +48,7 @@
                                     <option value="months">Months</option>
                                 </select>
                             </div>
-                            
+
                             <!--Worker Rate-->                            
                             <select name="rate" id="rate">
                                 <option value="Junior">Junior</option>
@@ -65,7 +64,6 @@
                     <!--Ongoing Cost-->
                     <h2>Ongoing Costs</h2>
                     <button id="addOngoing" type="button">+ Ongoing Cost</button>
-                    <button id="removeOngoing" type="button">- Ongoing Cost</button>
 
                     <!--Append ongoing costs-->
                     <div id="ongoingCosts">
@@ -73,9 +71,9 @@
                         <label for="costName">Name:</label>
                         <label for="costAmount">Amount:</label>
                         <label for="costFrequency">Frequency:</label>
-                        <label for="costDuration">Duration</label>
+                        <label for="costDuration">Duration:</label>
 
-                        <div>
+                        <div class="ongoingCost">
                             <!--Cost Name-->
                             <input type="text" name="costName" id="costName">
 
@@ -98,7 +96,6 @@
                     <!--One-off Cost-->
                     <h2>One-off Costs</h2>
                     <button id="addOneOff" type="button">+ One-off Cost</button>
-                    <button id="removeOneOff" type="button">- One-off Cost</button>
 
                     <!--Append one-off costs-->
                     <div id="oneOffCosts">
@@ -106,7 +103,7 @@
                         <label for="oneCostName">Name:</label>
                         <label for="oneCostAmount">Amount:</label>
 
-                        <div>
+                        <div class="oneOffCost">
                             <!--Cost Name-->
                             <input type="text" name="oneCostName" id="oneCostName">
 
@@ -138,6 +135,11 @@
         <footer>
             <%- include('../partials/footer') %>
         </footer>
+
+        <!--Templates-->
+        <%- include('../templates/worker') %>
+        <%- include('../templates/ongoingCost') %>
+        <%- include('../templates/oneOffCost') %>
         
     </body>
 </html>
