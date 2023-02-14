@@ -28,6 +28,11 @@ app.get("/Account", (req, res) => {
     res.render("pages/Account");
 });
 
+//Admin Route
+app.get("/Admin", (req, res) => {
+    res.render("pages/Admin");
+});
+
 //Login Route
 app.get("/Login", (req, res) => {
     res.render("pages/Login");
