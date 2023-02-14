@@ -12,12 +12,12 @@
     <% if (!locals.loggedin) { %> 
         <!--Login Button-->
         <div class="dropdown">
-            <button class="drop-button" onclick="openDropdown('login-form')">
+            <button class="drop-button" onclick="openDropdown('login-form', 'register-form')">
                 <i class="fa-solid fa-right-to-bracket"></i> Login
             </button>  
 
             <!--Login Form-->
-            <div id="login-form">
+            <div class="dropdown-content" id="login-form">
                 <form action="/Login" method="post">
                     <!--Username-->
                     <label for="username">Username:</label>
@@ -35,12 +35,12 @@
         
         <!--Register Button-->
         <div class="dropdown">
-            <button class="drop-button" onclick="openDropdown('register-form')">
+            <button class="drop-button" onclick="openDropdown('register-form', 'login-form')">
                 <i class="fa-solid fa-address-card"></i> Register
             </button>
 
             <!--Register Form-->
-            <div id="register-form">
+            <div class="dropdown-content" id="register-form">
                 <form action="/Register" method="post">
                     <!--First Name-->
                     <label for="firstName">First Name:</label>
