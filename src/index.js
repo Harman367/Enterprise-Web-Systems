@@ -35,12 +35,12 @@ app.get("/Admin", (req, res) => {
 
 //Login Route
 app.get("/Login", (req, res) => {
-    res.render("pages/Login");
+
 });
 
 //Register Route
 app.get("/Register", (req, res) => {
-    res.render("pages/Register");
+
 });
 
 //Start Server
