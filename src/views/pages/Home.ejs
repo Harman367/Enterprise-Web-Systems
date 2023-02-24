@@ -7,6 +7,9 @@
     <head>
         <title>Home Page</title>
         <%- include('../partials/head') %>
+
+        <!--Link JS-->
+        <script src="/scripts/home.js"></script>
     </head>
 
     <body>
@@ -20,7 +23,8 @@
             <!--Page Heading-->
             <div>
                 <h1>Project Quote Calculator</h1>
-                <p>Enter your details below to get a quote!</p>  
+                <p>Enter your details below to get a quote!</p> 
+                <button>Clear</button>
             </div>
 
             <!--Project Quote Calculator Form-->
@@ -114,7 +118,7 @@
 
                     <!--Button and Output-->
                     <div class="button-holder">
-                        <button id="button-home">Calculate Quote!</button>
+                        <button id="button-calculate">Calculate Quote!</button>
                         <h3 id="finalQuote">?????</h3>
                         <h3 id="quoteExplained">?????</h3>
                     </div>
