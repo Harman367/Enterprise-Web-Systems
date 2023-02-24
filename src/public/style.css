@@ -1,12 +1,7 @@
 /*Navbar*/
 
 /*Hide dropdown form*/
-#login-form:not(.show) {
-    display: none;
-}
-
-/*Hide dropdown form*/
-#register-form:not(.show) {
+.dropdown-content:not(.show) {
     display: none;
 }
 
