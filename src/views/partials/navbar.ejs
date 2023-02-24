@@ -12,13 +12,13 @@
     <% if (!locals.loggedin) { %> 
         <!--Login Button-->
         <div class="dropdown">
-            <button class="drop-button" onclick="openDropdown('login-form', 'register-form')">
+            <button class="drop-button" onclick="openDropdown('login-form-container', 'register-form-container')">
                 <i class="fa-solid fa-right-to-bracket"></i> Login
             </button>  
 
             <!--Login Form-->
-            <div class="dropdown-content" id="login-form">
-                <form action="/Login" method="post">
+            <div class="dropdown-content" id="login-form-container">
+                <form action="/Login" method="post" id="login-form">
                     <!--Username-->
                     <label for="username">Username:</label>
                     <input type="text" name="username" id="login-username">
@@ -28,20 +28,20 @@
                     <input type="password" name="password" id="login-password">
 
                     <!--Login Button-->
-                    <input type="submit" value="Login">
+                    <button>Login</button>
                 </form>
             </div>
         </div>
         
         <!--Register Button-->
         <div class="dropdown">
-            <button class="drop-button" onclick="openDropdown('register-form', 'login-form')">
+            <button class="drop-button" onclick="openDropdown('register-form-container', 'login-form-container')">
                 <i class="fa-solid fa-address-card"></i> Register
             </button>
 
             <!--Register Form-->
-            <div class="dropdown-content" id="register-form">
-                <form action="/Register" method="post">
+            <div class="dropdown-content" id="register-form-container">
+                <form action="/Register" method="post" id="register-form">
                     <!--First Name-->
                     <label for="firstName">First Name:</label>
                     <input type="text" name="firstName" id="firstName">
@@ -71,7 +71,7 @@
                     <input type="password" name="password" id="confirm-password">
 
                     <!--Register Button-->
-                    <input type="submit" value="Register">
+                    <button>Register</button>
                 </form>
         </div>
 
