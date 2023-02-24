@@ -18,6 +18,9 @@ app.set("views", "src/views");
 //Set up view engine.
 app.set("view engine", "ejs");
 
+
+/*---Get Routes---*/
+
 //Root Route
 app.get("/", (req, res) => {
   res.render("pages/Home");
@@ -25,23 +28,28 @@ app.get("/", (req, res) => {
 
 //Account Route
 app.get("/Account", (req, res) => {
-    res.render("pages/Account");
+  res.render("pages/Account");
 });
 
 //Admin Route
 app.get("/Admin", (req, res) => {
-    res.render("pages/Admin");
+  res.render("pages/Admin");
 });
 
-//Login Route
-app.get("/Login", (req, res) => {
 
+/*---Post Routes---*/
+
+//Login Route
+app.post("/Login", (req, res) => {
+  const { username, password } = req.body;
+
+  console.log(username, password);
 });
 
 //Register Route
-app.get("/Register", (req, res) => {
+app.post("/Register", (req, res) => {
 
 });
 
 //Start Server
-app.listen(app.get("port"), () => console.log(`Listening... http://localhost:${app.get("port")}`));
+app.listen(app.get("port"), () => console.log(`Listening on: http://localhost:${app.get("port")}`));
