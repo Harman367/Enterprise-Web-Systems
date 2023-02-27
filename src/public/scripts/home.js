@@ -23,6 +23,54 @@ function removeInput(element) {
     element.parentElement.remove();
 }
 
+//Function to clear the form.
+function clearForm() {
+    //Get the form inputs.
+    const inputs = document.querySelectorAll('input');
+
+    //Clear the form.
+    for(let input of inputs){
+        input.value = "";
+    }
+
+    //Get the form.
+    const selects = document.querySelectorAll('select');
+
+    //Clear the form.
+    for(let select of selects){
+        select.selectedIndex = "0";
+    }
+
+    //Save the form data.
+    saveCalculation();
+}
+
+//Function to reset the form.
+function resetForm() {
+    clearForm();
+
+    //Get form rows
+    const workers = document.querySelectorAll('.worker');
+    const ongoingCosts = document.querySelectorAll('.ongoingCost');
+    const oneOffCosts = document.querySelectorAll('.oneOffCost');
+
+    //Remove all rows except the first.
+    for(let i = 1; i < workers.length; i++){
+        workers[i].remove();
+    }
+
+    for(let i = 1; i < ongoingCosts.length; i++){
+        ongoingCosts[i].remove();
+    }
+
+    for(let i = 1; i < oneOffCosts.length; i++){
+        oneOffCosts[i].remove();
+    }
+
+    //Save the form data.
+    saveCalculation();
+}
+
 //Add event listener to the button.
 window.addEventListener('load', () => {
     //Add event listener to the add worker button.
@@ -38,6 +86,16 @@ window.addEventListener('load', () => {
     //Add event listener to the add one off cost button.
     document.getElementById('addOneOff').addEventListener('click', event => {
         createInput('oneOffCost', 'oneOffCosts', 'oneOffTemplate');
+    });
+
+    //Add event listener to the clear button.
+    document.getElementById('clear').addEventListener('click', event => {
+        clearForm();
+    });
+
+    //Add event listener to the reset button.
+    document.getElementById('reset').addEventListener('click', event => {
+        resetForm();
     });
 });
 
@@ -75,6 +133,13 @@ function saveCalculation() {
         });
     }
 
+    for(let oneOffCost of oneOffCosts){
+        calculationState.oneOffCosts.push({
+            costName: oneOffCost.querySelector('#oneCostName').value,
+            costAmount: oneOffCost.querySelector('#oneCostAmount').valueAsNumber,
+        });
+    }
+
     //Set key for local storage.
     const name = "calculator"
 
@@ -92,18 +157,67 @@ function loadCalculation() {
     //Get the form.
     const form = document.getElementById('quote-calculator');
 
-    //Get the form data.
-    const formData = new FormData(form);
+    if(localStorage.getItem("calculator") != null){
+        //Get the form data.
+        const calculationState = JSON.parse(localStorage.getItem("calculator"));
 
-    //Set key for local storage.
-    const name = "calculator"
+        //Count the number of rows.
+        let workerCount = 0;
+        let ongoingCount = 0;
+        let oneOffCount = 0;
 
-    //Get the form data from local storage.
-    const data = JSON.parse(localStorage.getItem(name));
+        //Load the form data.
+        for(let worker of calculationState.workers){
+            //Create a new row if there are not enough rows.
+            if (document.querySelectorAll('.worker').length < calculationState.workers.length) {
+                createInput('worker', 'workers', 'workerTemplate');
+            }
 
-    //Set the form data to the values from local storage.
-    for (let [key, value] of formData.entries()) {
-        formData.set(key, data[key]);
+            //Get the row.
+            const workerRow = document.querySelectorAll('.worker')[workerCount];
+
+            //Set the values.
+            workerRow.querySelector('#timeRequired').value = worker.timeRequired;
+            workerRow.querySelector('#units').value = worker.units;
+            workerRow.querySelector('#rate').value = worker.rate;
+            workerRow.querySelector('#numWorkers').value = worker.numWorkers;
+
+            workerCount++;
+        }
+
+        for(let ongoingCost of calculationState.ongoingCosts){
+            //Create a new row if there are not enough rows.
+            if (document.querySelectorAll('.ongoingCost').length < calculationState.ongoingCosts.length) {
+                createInput('ongoingCost', 'ongoingCosts', 'ongoingTemplate');
+            }
+
+            //Get the row.
+            const ongoingCostRow = document.querySelectorAll('.ongoingCost')[ongoingCount];
+
+            //Set the values.
+            ongoingCostRow.querySelector('#costName').value = ongoingCost.costName;
+            ongoingCostRow.querySelector('#costAmount').value = ongoingCost.costAmount;
+            ongoingCostRow.querySelector('#costFrequency').value = ongoingCost.costFrequency;
+            ongoingCostRow.querySelector('#costDuration').value = ongoingCost.costDuration;
+
+            ongoingCount++;
+        }
+
+        for(let oneOffCost of calculationState.oneOffCosts){
+            //Create a new row if there are not enough rows.
+            if (document.querySelectorAll('.oneOffCost').length < calculationState.oneOffCosts.length) {
+                createInput('oneOffCost', 'oneOffCosts', 'oneOffTemplate');
+            }
+
+            //Get the row.
+            const oneOffCostRow = document.querySelectorAll('.oneOffCost')[oneOffCount];
+
+            //Set the values.
+            oneOffCostRow.querySelector('#oneCostName').value = oneOffCost.costName;
+            oneOffCostRow.querySelector('#oneCostAmount').value = oneOffCost.costAmount;
+
+            oneOffCount++;
+        }
     }
 }
 
