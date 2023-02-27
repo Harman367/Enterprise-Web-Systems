@@ -18,6 +18,9 @@
 
             <!--Login Form-->
             <div class="dropdown-content" id="login-form-container">
+                <!--Login Error-->
+                <p id="failed-login" style="display:none">Username / Password Incorrect</p>
+
                 <form action="/Login" method="post" id="login-form">
                     <!--Username-->
                     <label for="username">Username:</label>
@@ -41,6 +44,9 @@
 
             <!--Register Form-->
             <div class="dropdown-content" id="register-form-container">
+                <!--Register Error-->
+                <p id="failed-register" style="display:none">Username / Email Already Exists</p>
+
                 <form action="/Register" method="post" id="register-form">
                     <!--First Name-->
                     <label for="firstName">First Name:</label>
@@ -76,6 +82,16 @@
         </div>
 
     <% } else { %>
+
+        <% if (locals.userType == "admin") { %>
+            <!--Admin Button-->
+            <li class="navbar-item">
+                <a href="/Admin">
+                    <i class="fa-solid fa-user-cog"></i> Admin
+                </a>
+            </li>
+        <% } %>
+
         <!--Account Button-->
         <li class="navbar-item">
             <a href="/Account">
