@@ -36,16 +36,43 @@ function handleLogin(event) {
 
     //Get the username and password from the form.
     const formData = new FormData(event.target);
+
+    for(let pair of formData.entries()) {
+        console.log(pair[0]+ ', '+ pair[1]);
+    }
     
     //Send the form data to the server.
     fetch("/Login", {
         method: "POST",
-        body: formData
+        body: new URLSearchParams(formData)
     }).then(response => {
-        return response.json();
-    }).then(data => {
-        console.log(data);
-    });
+        //Switch statement
+        switch (response.status) {
+            case 200: 
+                //Login successful.
+                window.location.reload();
+
+            case 401:
+                //Login failed.
+                errorMSG = document.getElementById("failed-login");
+                errorMSG.style.display = "block";
+            break;
+        }
+    })
+}
+
+//Clear register form
+function clearRegisterForm() {
+    //Get the form inputs.
+    const inputs = document.querySelectorAll('#register-form > input');
+
+    //Clear the form.
+    for(let input of inputs){
+        input.value = "";
+    }
+
+    //Close the dropdown menu.
+    document.getElementById('register-form-container').classList.remove("show");
 }
 
 //Function to handle the register form.
@@ -59,12 +86,22 @@ function handleRegister(event) {
     //Send the form data to the server.
     fetch("/Register", {
         method: "POST",
-        body: formData
+        body: new URLSearchParams(formData)
     }).then(response => {
-        return response.json();
-    }).then(data => {
-        console.log(data);
-    });
+        //Switch statement
+        switch (response.status) {
+            case 200: 
+                //Registration successful.
+                clearRegisterForm();
+                alert("Registration successful!");
+
+            case 401:
+                //Registration failed.
+                errorMSG = document.getElementById("failed-register");
+                errorMSG.style.display = "block";
+            break;
+        }
+    })
 }
 
 //Add event listeners to the forms.
