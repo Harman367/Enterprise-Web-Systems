@@ -32,8 +32,35 @@ app.get("/", (req, res) => {
 });
 
 //Account Route
-app.get("/Account", (req, res) => {
-  res.render("pages/Account", {loggedIn: req.session.loggedIn, admin: req.session.admin});
+app.get("/Account", async (req, res) => {
+  //Check if the user is logged in.
+  if(!req.session.loggedIn){
+    res.redirect("/");
+    return
+  }
+
+  //Get current user.
+  const username = req.session.currentuser;
+
+  //Get the user data.
+  try{
+    const user = await userModel.findOne({username: username});
+
+    //Check if the user exists.
+    if(!user){
+      res.redirect("/");
+      return
+    }
+
+    console.log(user)
+
+    //Render the page.
+    res.render("pages/Account", {loggedIn: req.session.loggedIn, admin: req.session.admin, user: user});
+
+  } catch(error){
+    res.redirect("/");
+    console.error(error);
+  }
 });
 
 //Admin Route
