@@ -1,8 +1,9 @@
 //Imports
 import "dotenv/config";
 import express from "express";
-import { MongoClient } from "mongodb";
+import mongoose from "mongoose";
 import session from "express-session";
+import userModel from "./models/user.js";
 
 //Initialize App
 const app = express();
@@ -23,24 +24,21 @@ app.set("view engine", "ejs");
 //Set up session.
 app.use(session({secret:process.env.SESSION_SECRET, resave: false, saveUninitialized: false}));
 
-//Setup Database
-let db;
-
 /*---Get Routes---*/
 
 //Root Route
 app.get("/", (req, res) => {
-  res.render("pages/Home");
+  res.render("pages/Home", {loggedIn: req.session.loggedIn, admin: req.session.admin});
 });
 
 //Account Route
 app.get("/Account", (req, res) => {
-  res.render("pages/Account");
+  res.render("pages/Account", {loggedIn: req.session.loggedIn, admin: req.session.admin});
 });
 
 //Admin Route
 app.get("/Admin", (req, res) => {
-  res.render("pages/Admin");
+  res.render("pages/Admin", {loggedIn: req.session.loggedIn, admin: req.session.admin});
 });
 
 
@@ -49,34 +47,46 @@ app.get("/Admin", (req, res) => {
 //Login Route
 app.post("/Login", express.urlencoded({
   extended: true
-}), (req, res) => {
+}), async (req, res) => {
 
   //Get the username and password from the form.
   const username = req.body.username;
   const password = req.body.password;
 
-  
-  db.collection("users").findOne({username: username, password: password}).then(result => {
+  //Check if the user exists.
+  try{
+    const user = await userModel.findOne({username: username});
+
     //Check if the user exists.
-    if(!result){
+    if(!user){
       res.status(401).json({ message: "Failed" });
-
-    } else{
-      //Set the session variables.
-      req.session.loggedIn = true;
-      req.session.currentuser = username;
-      req.session.admin = result.admin;
-
-      //Login successful.
-      res.status(200).json({ message: "Success" });
+      return
     }
-  }).catch(error => console.error(error));
+
+    //Authenticate the password.
+    if(!user.authenticate(password)){
+      res.status(401).json({ message: "Failed" });
+      return
+    }
+
+    //Set the session variables.
+    req.session.loggedIn = true;
+    req.session.currentuser = username;
+    req.session.admin = user.admin;
+
+    //Login successful.
+    res.status(200).json({ message: "Success" });
+
+  } catch(error){
+    res.status(401).json({ message: "Failed" });
+    console.error(error);
+  }
 });
 
 //Register Route
 app.post("/Register", express.urlencoded({
   extended: true
-}), (req, res) => {
+}), async (req, res) => {
   //Get the user data from the form.
  let userData = {
   "firstName": req.body.firstName,
@@ -90,25 +100,31 @@ app.post("/Register", express.urlencoded({
   }
 
   //Check if the username is already taken.
-  db.collection("users").findOne({username: userData.username}).then(result => {
-    if(result){
-      res.status(401).json({ message: "Failed" });
-    } else{
-      //Insert the user into the database.
-      db.collection("users").insertOne(userData).then(result => {
-        res.status(200).json({ message: "Success" });
-      }).catch(error => console.error(error));
-    }
-  }).catch(error => console.error(error));
+  const user = new userModel(userData);
+  try{
+    await user.save()
+    res.status(200).json({ message: "Success" });
+  } catch(error){
+    res.status(401).json({ message: "Failed" });
+    console.error(error);
+  }
+});
+
+//Logout Route
+app.get("/Logout", (req, res) => {
+  //Destroy the session.
+  req.session.destroy();
+
+  //Redirect to the home page.
+  res.redirect("/");
 });
 
 
 /*---Start Server---*/
 
 //Database Connection
-MongoClient.connect(process.env.DB_HOST ?? "").then(database => {
+mongoose.connect(process.env.DB_HOST ?? "").then(() => {
   console.log("Connecting to database...");
-  db = database;
 
   //Start Server
   app.listen(app.get("port"), () => console.log(`Listening on: http://localhost:${app.get("port")}`));
