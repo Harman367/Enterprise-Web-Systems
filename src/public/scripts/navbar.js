@@ -54,7 +54,7 @@ function handleLogin(event) {
 
             case 401:
                 //Login failed.
-                errorMSG = document.getElementById("failed-login");
+                let errorMSG = document.getElementById("failed-login");
                 errorMSG.style.display = "block";
             break;
         }
@@ -83,25 +83,57 @@ function handleRegister(event) {
     //Get the username and password from the form.
     const formData = new FormData(event.target);
 
-    //Send the form data to the server.
-    fetch("/Register", {
-        method: "POST",
-        body: new URLSearchParams(formData)
-    }).then(response => {
-        //Switch statement
-        switch (response.status) {
-            case 200: 
-                //Registration successful.
-                clearRegisterForm();
-                alert("Registration successful!");
+    //Check if the form is ready to be sent.
+    let send = true;
 
-            case 401:
-                //Registration failed.
-                errorMSG = document.getElementById("failed-register");
-                errorMSG.style.display = "block";
+    //Get the error message.
+    let errorMSG = document.getElementById("empty-fields");
+
+    //Check for empty fields.
+    for(let pair of formData.entries()) {
+        if(pair[1] == ""){
+            //Show error message.
+            errorMSG.style.display = "block";
+            send = false;
             break;
+        } else{
+            errorMSG.style.display = "none";
         }
-    })
+    }
+
+    //Get the error message.
+    errorMSG = document.getElementById("password-mismatch");
+
+    //Compare the passwords.
+    if(formData.get("password") != formData.get("confirm-password")){
+        //Show error message.
+        errorMSG.style.display = "block";
+        send = false;
+    } else{
+        errorMSG.style.display = "none";
+    }
+
+    //Send the form data to the server.
+    if(send){
+        fetch("/Register", {
+            method: "POST",
+            body: new URLSearchParams(formData)
+        }).then(response => {
+            //Switch statement
+            switch (response.status) {
+                case 200: 
+                    //Registration successful.
+                    clearRegisterForm();
+                    alert("Registration successful!");
+
+                case 401:
+                    //Registration failed.
+                    errorMSG = document.getElementById("failed-register");
+                    errorMSG.style.display = "block";
+                break;
+            }
+        })
+    }
 }
 
 //Add event listeners to the forms.
