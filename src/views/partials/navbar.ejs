@@ -9,7 +9,7 @@
     </li>
 
     <!--Check if logged in and change navbar.-->
-    <% if (!locals.loggedin) { %> 
+    <% if (!locals.loggedIn) { %> 
         <!--Login Button-->
         <div class="dropdown">
             <button class="drop-button" onclick="openDropdown('login-form-container', 'register-form-container')">
@@ -46,6 +46,8 @@
             <div class="dropdown-content" id="register-form-container">
                 <!--Register Error-->
                 <p id="failed-register" style="display:none">Username / Email Already Exists</p>
+                <p id="password-mismatch" style="display:none">Passwords do not match</p>
+                <p id="empty-fields" style="display:none">Please fill in all fields</p>
 
                 <form action="/Register" method="post" id="register-form">
                     <!--First Name-->
@@ -74,7 +76,7 @@
 
                     <!--Confirm Password-->
                     <label for="password">Confirm Password:</label>
-                    <input type="password" name="password" id="confirm-password">
+                    <input type="password" name="confirm-password" id="confirm-password">
 
                     <!--Register Button-->
                     <button>Register</button>
@@ -83,7 +85,7 @@
 
     <% } else { %>
 
-        <% if (locals.userType == "admin") { %>
+        <% if (locals.admin) { %>
             <!--Admin Button-->
             <li class="navbar-item">
                 <a href="/Admin">
