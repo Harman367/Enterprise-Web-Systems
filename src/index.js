@@ -24,6 +24,7 @@ app.set("view engine", "ejs");
 //Set up session.
 app.use(session({secret:process.env.SESSION_SECRET, resave: false, saveUninitialized: false}));
 
+
 /*---Get Routes---*/
 
 //Root Route
@@ -52,8 +53,6 @@ app.get("/Account", async (req, res) => {
       return
     }
 
-    console.log(user)
-
     //Render the page.
     res.render("pages/Account", {loggedIn: req.session.loggedIn, admin: req.session.admin, user: user});
 
@@ -68,6 +67,15 @@ app.get("/Admin", (req, res) => {
   res.render("pages/Admin", {loggedIn: req.session.loggedIn, admin: req.session.admin});
 });
 
+//Logout Route
+app.get("/Logout", (req, res) => {
+  //Destroy the session.
+  req.session.destroy();
+
+  //Redirect to the home page.
+  res.redirect("/");
+});
+
 
 /*---Post Routes---*/
 
@@ -80,14 +88,13 @@ app.post("/Login", express.urlencoded({
   const username = req.body.username;
   const password = req.body.password;
 
-  //Check if the user exists.
   try{
+    //Check if the user exists.
     const user = await userModel.findOne({username: username});
 
-    //Check if the user exists.
     if(!user){
       res.status(401).json({ message: "Failed" });
-      return
+      return 
     }
 
     //Authenticate the password.
@@ -115,35 +122,73 @@ app.post("/Register", express.urlencoded({
   extended: true
 }), async (req, res) => {
   //Get the user data from the form.
- let userData = {
-  "firstName": req.body.firstName,
-  "lastName": req.body.lastName,
-  "email": req.body.email,
-  "company": req.body.company,
-  "username": req.body.username,
-  "password": req.body.password,
-  "admin": false,
-  "savedQuotes": []
+  let userData = {
+    "firstName": req.body.firstName,
+    "lastName": req.body.lastName,
+    "email": req.body.email,
+    "company": req.body.company,
+    "username": req.body.username,
+    "password": req.body.password,
+    "admin": false,
+    "savedQuotes": []
   }
 
-  //Check if the username is already taken.
+  //Check if the username / email is already taken.
   const user = new userModel(userData);
   try{
+    //Save the user.
     await user.save()
+
+    //Registration successful.
     res.status(200).json({ message: "Success" });
+
   } catch(error){
     res.status(401).json({ message: "Failed" });
     console.error(error);
   }
 });
 
-//Logout Route
-app.get("/Logout", (req, res) => {
-  //Destroy the session.
-  req.session.destroy();
+//Update User Route
+app.post("/UpdateUser", express.urlencoded({
+  extended: true
+}), async (req, res) => {
+  //Check if the user is logged in.
+  if(!req.session.loggedIn){
+    res.redirect("/");
+    return
+  }
 
-  //Redirect to the home page.
-  res.redirect("/");
+  //Get the user data from the form.
+  let userData = {
+    "firstName": req.body.firstName,
+    "lastName": req.body.lastName,
+    "email": req.body.email,
+    "company": req.body.company,
+    "username": req.body.username,
+    "password": req.body.password
+  }
+
+  //Check if the password is empty.
+  if(userData.password == ""){
+    delete userData["password"]
+  }
+
+  //Get the current user.
+  const username = req.session.currentuser;
+  try{
+    //Update the user data.
+    await userModel.findOneAndUpdate({username: username}, userData)
+
+    //Change the session variables.
+    req.session.currentuser = userData.username;
+
+    //Update successful.
+    res.status(200).json({ message: "Success" });
+
+  } catch(error){
+    res.status(401).json({ message: "Failed" });
+    console.error(error);
+  }
 });
 
 
