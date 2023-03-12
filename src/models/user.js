@@ -17,7 +17,6 @@ const userSchema = new Schema({
 
 //Hash password
 userSchema.virtual("password").set(function (password){
-    console.log(this)
     this._password = password
     this.salt = this.makeSalt()
     this.hashed_password = this.encryptPassword(password)
