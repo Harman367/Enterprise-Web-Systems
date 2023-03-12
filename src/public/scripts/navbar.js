@@ -36,10 +36,6 @@ function handleLogin(event) {
 
     //Get the username and password from the form.
     const formData = new FormData(event.target);
-
-    for(let pair of formData.entries()) {
-        console.log(pair[0]+ ', '+ pair[1]);
-    }
     
     //Send the form data to the server.
     fetch("/Login", {
@@ -51,12 +47,13 @@ function handleLogin(event) {
             case 200: 
                 //Login successful.
                 window.location.reload();
+                break;
 
             case 401:
                 //Login failed.
                 let errorMSG = document.getElementById("failed-login");
                 errorMSG.style.display = "block";
-            break;
+                break;
         }
     })
 }
@@ -80,7 +77,7 @@ function handleRegister(event) {
     //Prevent the form from submitting.
     event.preventDefault();
 
-    //Get the username and password from the form.
+    //Get the data from the form.
     const formData = new FormData(event.target);
 
     //Check if the form is ready to be sent.
@@ -125,12 +122,13 @@ function handleRegister(event) {
                     //Registration successful.
                     clearRegisterForm();
                     alert("Registration successful!");
+                    break;
 
                 case 401:
                     //Registration failed.
                     errorMSG = document.getElementById("failed-register");
                     errorMSG.style.display = "block";
-                break;
+                    break;
             }
         })
     }
