@@ -7,6 +7,9 @@
     <head>
         <title>Account Page</title>
         <%- include('../partials/head') %>
+
+        <!--Link JS-->
+        <script src="/scripts/account.js"></script>
     </head>
 
     <body>
@@ -23,8 +26,14 @@
 
             <!--User Details-->
             <div>
-                <h2>User Details</h2>
-                <form action="updateUserDetails()">
+                <h2 id="user-details">User Details</h2>
+
+                <!--Update Error-->
+                <p id="failed-update" style="display:none">Username / Email Already Exists</p>
+                <p id="failed-password" style="display:none">Password too short (8 or more characters)</p>
+
+                <!--Update Form-->
+                <form method="post" id="update-form" style="display: none;">
                     <!--First Name-->
                     <label for="firstName">First Name:</label>
                     <input type="text" name="firstName" id="firstName_account" value="<%= user.firstName %>">
