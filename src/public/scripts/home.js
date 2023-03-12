@@ -71,7 +71,7 @@ function resetForm() {
     saveCalculation();
 }
 
-//Add event listener to the button.
+//Add event listeners.
 window.addEventListener('load', () => {
     //Add event listener to the add worker button.
     document.getElementById('addWorker').addEventListener('click', event => {
@@ -97,6 +97,9 @@ window.addEventListener('load', () => {
     document.getElementById('reset').addEventListener('click', event => {
         resetForm();
     });
+
+    //Load form inputs when refreshing the page.
+    loadCalculation();
 });
 
 
@@ -220,8 +223,3 @@ function loadCalculation() {
         }
     }
 }
-
-//Load form inputs when refreshing the page.
-window.addEventListener('load', () => {
-    loadCalculation();
-});
