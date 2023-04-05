@@ -1,0 +1,79 @@
+<!-- Subtask template-->
+
+<template id="subtaskTemplate">
+    <form method="post" class="quote-calculator">
+        <!--Subtask-->
+        <h3 class="subtask-number"></h3>
+
+        <!--Workers-->
+        <h3>Worker(s)</h3>
+        <button class="addWorker" type="button">+ Worker</button>
+
+        <!--Append workers-->
+        <div class="workers">
+            <!--Input Labels-->
+            <label for="timeRequired">Time Required:</label>
+            <label for="rate">Rate:</label>
+            <label for="numWorkers">Amount:</label>
+
+            <div class="worker">
+                <!--Time required and units of time-->
+                <div>
+                    <input type="number" name="timeRequired" class="timeRequired" min="1">
+                    <select name="units" class="units">
+                        <option value="hours">Hours</option>
+                        <option value="days">Days</option>
+                        <option value="weeks">Weeks</option>
+                        <option value="months">Months</option>
+                    </select>
+                </div>
+
+                <!--Worker Rate-->                            
+                <select name="rate" class="rate">
+                    <option value="junior">Junior</option>
+                    <option value="standard">Standard</option>
+                    <option value="senior">Senior</option>
+                </select>
+
+                <!--Number of Workers-->
+                <input type="number" name="numWorkers" class="numWorkers" min="1">
+            </div>
+        </div>
+
+        <!--Ongoing Cost-->
+        <h3>Ongoing Costs</h3>
+        <button class="addOngoing" type="button">+ Ongoing Cost</button>
+
+        <!--Append ongoing costs-->
+        <div class="ongoingCosts">
+            <!--Input Labels-->
+            <label for="costName">Name:</label>
+            <label for="costAmount">Amount:</label>
+            <label for="costFrequency">Frequency:</label>
+            <label for="costDuration">Duration:</label>
+        </div>
+
+        <!--One-off Cost-->
+        <h3>One-off Costs</h3>
+        <button class="addOneOff" type="button">+ One-off Cost</button>
+
+        <!--Append one-off costs-->
+        <div class="oneOffCosts">
+            <!--Input Labels-->
+            <label for="oneCostName">Name:</label>
+            <label for="oneCostAmount">Amount:</label>
+        </div>
+
+        <!--Fudge Factor-->
+        <% if (locals.admin) { %>
+            <label for="fudgeFactorSub">Use Fudge Factor</label>
+            <input type="checkbox" name="fudgeFactorSub" id="fudgeFactorSub">
+        <% } %>
+
+        <!--Button and Output-->
+        <div class="button-holder">
+            <button class="button-calculate-subtask">Calculate Subtask</button>
+            <h4 class="subtask-quote"></h4>
+        </div>
+    </form>
+</template>
