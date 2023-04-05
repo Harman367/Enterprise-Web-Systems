@@ -1,13 +1,20 @@
 //Export funtion to calculate the project quote.
-export function calculateQuote(formData){
+export function calculateQuote(formData, fudge=true){
     //Create Fudge Factor.
-    let fudgeFactorTime = Math.random() * (1.11 - 0.9) + 0.9;
-    let fudgeFactorCost = Math.random() * (1.11 - 0.9) + 0.9;
+    let fudgeFactorTime;
+    let fudgeFactorCost;
 
-    console.log(fudgeFactorTime)
-    console.log(fudgeFactorCost)
+    //Check if fudge factor is enabled.
+    if(fudge){
+        fudgeFactorTime = Math.random() * (1.11 - 0.9) + 0.9;
+        fudgeFactorCost = Math.random() * (1.11 - 0.9) + 0.9;
+    } else {
+        fudgeFactorTime = 1;
+        fudgeFactorCost = 1;
+    }
 
-    //Check if form data is an array.
+
+    //Check if worker form data is an array.
     if(!Array.isArray(formData.timeRequired)){
         formData.timeRequired = [formData.timeRequired];
         formData.units = [formData.units];
@@ -34,8 +41,6 @@ export function calculateQuote(formData){
             case "months": timeUnit =  160; break;
         }
 
-        console.log(timeUnit)
-
         //Get the rate.
         let rate = 0
 
@@ -46,17 +51,37 @@ export function calculateQuote(formData){
             case "senior": rate =  30; break;
         }
 
-        console.log(rate)
-
-        console.log(formData.numWorkers[i])
-
         //Add to total cost.
         totalCost += formData.timeRequired[i] * (timeUnit * fudgeFactorTime) * (rate * fudgeFactorCost) * formData.numWorkers[i];
     }
 
-    
 
-    //Return the total cost.
+    //Check if ongoing form data is an array.
+    if(!Array.isArray(formData.costAmount)){
+        formData.costAmount = [formData.costAmount];
+        formData.costDuration = [formData.costDuration];
+    }
+
+    //Calculate ongoing costs.
+    for(let i = 0; i < formData.costAmount.length; i++){
+        //Add to total cost.
+        totalCost += (formData.costAmount[i] * fudgeFactorCost) * (formData.costDuration[i] * fudgeFactorTime);
+
+    }
+
+
+    //Check if one-off form data is an array.
+    if(!Array.isArray(formData.oneCostAmount)){
+        formData.oneCostAmount = [formData.oneCostAmount];
+    }
+
+    //Calculate one-off costs.
+    for(let i = 0; i < formData.oneCostAmount.length; i++){
+        //Add to total cost.
+        totalCost += formData.oneCostAmount[i] * fudgeFactorCost;
+    }
+
+    //Return the rounded total cost.
     return Math.round(totalCost);
 }
 
