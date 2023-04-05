@@ -33,89 +33,43 @@
                 <!--Error Messages-->
                 <p id="empty-form-fields" style="display:none">Please fill in all fields or remove empty fields</p>
 
-                <form method="post" id="quote-calculator">
-                    <!--Workers-->
-                    <h2>Worker(s)</h2>
-                    <button id="addWorker" type="button">+ Worker</button>
+                <!--Subtask-->
+                <h2>Subtask(s)</h2>
+                <button id="addSubtask" type="button">+ Subtask</button>
 
-                    <!--Append workers-->
-                    <div id="workers">
-                        <!--Input Labels-->
-                        <label for="timeRequired">Time Required:</label>
-                        <label for="rate">Rate:</label>
-                        <label for="numWorkers">Amount:</label>
+                <!--Append subtasks-->
+                <div id="subtasks"></div>
 
-                        <div class="worker">
-                            <!--Time required and units of time-->
-                            <div>
-                                <input type="number" name="timeRequired" id="timeRequired" min="1">
-                                <select name="units" id="units">
-                                    <option value="hours">Hours</option>
-                                    <option value="days">Days</option>
-                                    <option value="weeks">Weeks</option>
-                                    <option value="months">Months</option>
-                                </select>
-                            </div>
+                <!--Fudge Factor-->
+                <% if (locals.admin) { %>
+                    <label for="fudgeFactor">Use Fudge Factor</label>
+                    <input type="checkbox" name="fudgeFactor" id="fudgeFactor">
+                <% } %>
 
-                            <!--Worker Rate-->                            
-                            <select name="rate" id="rate">
-                                <option value="junior">Junior</option>
-                                <option value="standard">Standard</option>
-                                <option value="senior">Senior</option>
-                            </select>
+                <!--Final Cost Button-->
+                <div class="button-holder">
+                    <button id="button-calculate-final">Calculate Quote</button>
+                    <h4 id="final-quote"></h4>
+                </div>
 
-                            <!--Number of Workers-->
-                            <input type="number" name="numWorkers" id="numWorkers" min="1">
-                        </div>
-                    </div>
+                <!--Quote Explained-->
+                <h4 id="quoteExplained">
+                    Project Quote based on: 
+                    + Estimated Time Required X Estimated Salary X Number of Workers
+                    + Estimated Ongoing Costs X Estimated Ongoing Cost Duration
+                    + Estimated One-off Costs
 
-                    <!--Ongoing Cost-->
-                    <h2>Ongoing Costs</h2>
-                    <button id="addOngoing" type="button">+ Ongoing Cost</button>
+                    Working time: 8 hours per day, 5 days per week, 4 weeks per month
+                </h4>
 
-                    <!--Append ongoing costs-->
-                    <div id="ongoingCosts">
-                        <!--Input Labels-->
-                        <label for="costName">Name:</label>
-                        <label for="costAmount">Amount:</label>
-                        <label for="costFrequency">Frequency:</label>
-                        <label for="costDuration">Duration:</label>
-                    </div>
-
-                    <!--One-off Cost-->
-                    <h2>One-off Costs</h2>
-                    <button id="addOneOff" type="button">+ One-off Cost</button>
-
-                    <!--Append one-off costs-->
-                    <div id="oneOffCosts">
-                        <!--Input Labels-->
-                        <label for="oneCostName">Name:</label>
-                        <label for="oneCostAmount">Amount:</label>
-                    </div>
-
-                    <!--Button and Output-->
+                <!--Save Project Quote-->
+                <% if (locals.loggedin) { %>
                     <div class="button-holder">
-                        <button id="button-calculate">Calculate Quote!</button>
-                        <h3 id="finalQuote">£</h3>
-                        <h3 id="quoteExplained">
-                            Project Quote based on: 
-                            + Estimated Time Required X Estimated Salary X Number of Workers
-                            + Estimated Ongoing Costs X Frequency X Estimated Ongoing Cost Duration
-                            + Estuimated One-off Costs
-
-                            Working time: 8 hours per day, 5 days per week, 4 weeks per month
-                        </h3>
+                        <label for="quoteName">Project Quote Name:</label>
+                        <input type="text" name="quoteName" id="quoteName">
+                        <button id="button-save">Save Quote</button>
                     </div>
-
-                    <!--Save Project Quote-->
-                    <% if (locals.loggedin) { %>
-                        <div class="button-holder">
-                            <label for="quoteName">Project Quote Name:</label>
-                            <input type="text" name="quoteName" id="quoteName">
-                            <button id="button-save">Save Quote</button>
-                        </div>
-                    <% } %>
-                </form>
+                <% } %>
             </div>
         </main>
 
@@ -125,6 +79,7 @@
         </footer>
 
         <!--Templates-->
+        <%- include('../templates/subtask') %>
         <%- include('../templates/worker') %>
         <%- include('../templates/ongoingCost') %>
         <%- include('../templates/oneOffCost') %>
