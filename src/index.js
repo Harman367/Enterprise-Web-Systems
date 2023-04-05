@@ -4,6 +4,7 @@ import express from "express";
 import mongoose from "mongoose";
 import session from "express-session";
 import userModel from "./models/user.js";
+import { calculateQuote } from "./public/scripts/calculator.js";
 
 //Initialize App
 const app = express();
@@ -191,6 +192,19 @@ app.post("/UpdateUser", express.urlencoded({
   }
 });
 
+//Calculator Route
+app.post("/Calculator", express.urlencoded({
+  extended: true
+}), async (req, res) => {
+
+  //Get project quote data from the form.
+  let totalCost = calculateQuote(req.body);
+
+  console.log(totalCost);
+
+  res.status(200).json({ message: "Success", cost: totalCost });
+
+});
 
 /*---Start Server---*/
 
