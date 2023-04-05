@@ -2,13 +2,13 @@
 
 <template id="ongoingTemplate">
     <!--Cost Name-->
-    <input type="text" name="costName" id="costName">
+    <input type="text" name="costName" class="costName">
 
     <!--Cost Amount-->
-    <input type="number" name="costAmount" id="costAmount" min="1">
+    <input type="number" name="costAmount" class="costAmount" min="1">
 
     <!--Cost Frequency-->
-    <select name="costFrequency" id="costFrequency">
+    <select name="costFrequency" class="costFrequency">
         <option value="hours">Hours</option>
         <option value="days">Days</option>
         <option value="weeks">Weeks</option>
@@ -16,10 +16,10 @@
     </select>
 
     <!--Cost Duration-->
-    <input type="number" name="costDuration" id="costDuration" min="1">
+    <input type="number" name="costDuration" class="costDuration" min="1">
 
     <!--Remove ongoing cost button-->
-    <button type="button" id="removeOngoing" onclick="removeInput(this)">
+    <button type="button" class="removeOngoing" onclick="removeInput(this)">
         <i class="fa-solid fa-xmark"></i>
     </button>
 </template>

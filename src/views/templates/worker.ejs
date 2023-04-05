@@ -3,8 +3,8 @@
 <template id="workerTemplate">
     <!--Time required and units of time-->
     <div>
-        <input type="number" name="timeRequired" id="timeRequired" min="1">
-        <select name="units" id="units">
+        <input type="number" name="timeRequired" class="timeRequired" min="1">
+        <select name="units" class="units">
             <option value="hours">Hours</option>
             <option value="days">Days</option>
             <option value="weeks">Weeks</option>
@@ -13,17 +13,17 @@
     </div>
 
     <!--Worker Rate-->                            
-    <select name="rate" id="rate">
+    <select name="rate" class="rate">
         <option value="junior">Junior</option>
         <option value="standard">Standard</option>
         <option value="senior">Senior</option>
     </select>
 
     <!--Number of Workers-->
-    <input type="number" name="numWorkers" id="numWorkers" min="1">
+    <input type="number" name="numWorkers" class="numWorkers" min="1">
 
     <!--Remove worker button-->
-    <button type="button" id="removeWorker" onclick="removeInput(this)">
+    <button type="button" class="removeWorker" onclick="removeInput(this)">
         <i class="fa-solid fa-xmark"></i>
     </button>
 </template>
