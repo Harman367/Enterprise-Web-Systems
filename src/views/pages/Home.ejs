@@ -30,7 +30,10 @@
 
             <!--Project Quote Calculator Form-->
             <div>
-                <form id="quote-calculator" action="calculateQuote()">
+                <!--Error Messages-->
+                <p id="empty-form-fields" style="display:none">Please fill in all fields or remove empty fields</p>
+
+                <form method="post" id="quote-calculator">
                     <!--Workers-->
                     <h2>Worker(s)</h2>
                     <button id="addWorker" type="button">+ Worker</button>
@@ -56,9 +59,9 @@
 
                             <!--Worker Rate-->                            
                             <select name="rate" id="rate">
-                                <option value="Junior">Junior</option>
-                                <option value="Standard">Standard</option>
-                                <option value="Senior">Senior</option>
+                                <option value="junior">Junior</option>
+                                <option value="standard">Standard</option>
+                                <option value="senior">Senior</option>
                             </select>
 
                             <!--Number of Workers-->
@@ -77,25 +80,6 @@
                         <label for="costAmount">Amount:</label>
                         <label for="costFrequency">Frequency:</label>
                         <label for="costDuration">Duration:</label>
-
-                        <div class="ongoingCost">
-                            <!--Cost Name-->
-                            <input type="text" name="costName" id="costName">
-
-                            <!--Cost Amount-->
-                            <input type="number" name="costAmount" id="costAmount" min="1">
-
-                            <!--Cost Frequency-->
-                            <select name="costFrequency" id="costFrequency">
-                                <option value="hours">Hours</option>
-                                <option value="days">Days</option>
-                                <option value="weeks">Weeks</option>
-                                <option value="months">Months</option>
-                            </select>
-
-                            <!--Cost Duration-->
-                            <input type="number" name="costDuration" id="costDuration" min="1">
-                        </div>
                     </div>
 
                     <!--One-off Cost-->
@@ -107,21 +91,20 @@
                         <!--Input Labels-->
                         <label for="oneCostName">Name:</label>
                         <label for="oneCostAmount">Amount:</label>
-
-                        <div class="oneOffCost">
-                            <!--Cost Name-->
-                            <input type="text" name="oneCostName" id="oneCostName">
-
-                            <!--Cost Amount-->
-                            <input type="number" name="oneCostAmount" id="oneCostAmount" min="1">
-                        </div>
                     </div>
 
                     <!--Button and Output-->
                     <div class="button-holder">
                         <button id="button-calculate">Calculate Quote!</button>
-                        <h3 id="finalQuote">?????</h3>
-                        <h3 id="quoteExplained">?????</h3>
+                        <h3 id="finalQuote">£</h3>
+                        <h3 id="quoteExplained">
+                            Project Quote based on: 
+                            + Estimated Time Required X Estimated Salary X Number of Workers
+                            + Estimated Ongoing Costs X Frequency X Estimated Ongoing Cost Duration
+                            + Estuimated One-off Costs
+
+                            Working time: 8 hours per day, 5 days per week, 4 weeks per month
+                        </h3>
                     </div>
 
                     <!--Save Project Quote-->
