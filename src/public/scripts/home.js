@@ -1,6 +1,51 @@
 //Home page script------------------------------------------------------------------------------------
 
-//Function to create label and input field for a worker.
+//Function to create label and input field for a subtask.
+function createSubtask(inputs, appendTo, temp) {
+    //Create item.
+    const item = document.createElement('div');
+    item.className = inputs;
+
+    //Get template.
+    const template = document.getElementById(temp);
+    const content = template.content.cloneNode(true);
+
+    //Append template to item.
+    item.appendChild(content);
+
+    //Get element to append to.
+    let workers = document.getElementById(appendTo);
+    workers.appendChild(item);
+
+    //Add event listener to the add worker button.
+    item.querySelector('.addWorker').addEventListener('click', event => {
+        createInput('worker', 'workers', 'workerTemplate');
+    });
+
+    //Add event listener to the add ongoing cost button.
+    item.querySelector('.addOngoing').addEventListener('click', event => {
+        createInput('ongoingCost', 'ongoingCosts', 'ongoingTemplate');
+    });
+
+    //Add event listener to the add one off cost button.
+    item.querySelector('.addOneOff').addEventListener('click', event => {
+        createInput('oneOffCost', 'oneOffCosts', 'oneOffTemplate');
+    });
+
+    updateSubtaskCount()
+}
+
+//Function to update subtask count.
+function updateSubtaskCount() {
+    const subtasks = document.querySelectorAll('.subtask-number');
+
+    //Loop through the subtasks and update the count.
+    for(let i = 0; i < subtasks.length; i++){
+        subtasks[i].innerHTML = "Subtask " + (i + 1)
+    }
+}
+
+//Function to create label and input fields for workers, ongoing costs and one off costs.
 function createInput(inputs, appendTo, temp) {
     //Create item.
     const item = document.createElement('div');
@@ -41,6 +86,13 @@ function clearForm() {
         select.selectedIndex = "0";
     }
 
+    //Clear the cost outputs.
+    const subtaskQuotes = document.getElementById('subtask-quote');
+    const finalQuote = document.getElementById('final-quote');
+
+    subtaskQuotes.innerHTML = "";
+    finalQuote.innerHTML = "";
+
     //Save the form data.
     saveCalculation();
 }
@@ -73,21 +125,6 @@ function resetForm() {
 
 //Add event listeners.
 window.addEventListener('load', () => {
-    //Add event listener to the add worker button.
-    document.getElementById('addWorker').addEventListener('click', event => {
-        createInput('worker', 'workers', 'workerTemplate');
-    });
-
-    //Add event listener to the add ongoing cost button.
-    document.getElementById('addOngoing').addEventListener('click', event => {
-        createInput('ongoingCost', 'ongoingCosts', 'ongoingTemplate');
-    });
-
-    //Add event listener to the add one off cost button.
-    document.getElementById('addOneOff').addEventListener('click', event => {
-        createInput('oneOffCost', 'oneOffCosts', 'oneOffTemplate');
-    });
-
     //Add event listener to the clear button.
     document.getElementById('clear').addEventListener('click', event => {
         clearForm();
@@ -98,9 +135,18 @@ window.addEventListener('load', () => {
         resetForm();
     });
 
+    //Add event listener to the add subtask button.
+    document.getElementById('addSubtask').addEventListener('click', event => {
+        createSubtask('subtask', 'subtasks', 'subtaskTemplate');
+    });
+
     //Get the quote form.
-    const quoteForm = document.getElementById('quote-calculator');
-    quoteForm.onsubmit = handleCalculation;
+    const quoteForm = document.getElementsByClassName('quote-calculator');
+
+    //Loop through the form and add event listeners.
+    for(let form of quoteForm){
+        form.onsubmit = handleCalculation;
+    }
 
     //Load form inputs when refreshing the page.
     loadCalculation();
@@ -228,7 +274,7 @@ function loadCalculation() {
     }
 }
 
-//Functio to handle calculating quote.
+//Function to handle calculating quote.
 function handleCalculation(event) {
     //Prevent the form from submitting.
     event.preventDefault(event);
@@ -254,11 +300,6 @@ function handleCalculation(event) {
         }
     }
 
-    //Print the form data to the console.
-    for(let pair of formData.entries()) {
-        console.log(pair[0]+ ', '+ pair[1]);
-    }
-
     //Send the form data to the server.
     if(send){
         fetch("/Calculator", {
@@ -270,9 +311,7 @@ function handleCalculation(event) {
                 const body = await response.json()
 
                 //Display the quote.
-                document.getElementById("finalQuote").innerHTML = "£" + body.cost;
-
-                console.log(body.cost);
+                document.getElementById("subtask-quote").innerHTML = "£" + body.cost;
             }
         })
     }
