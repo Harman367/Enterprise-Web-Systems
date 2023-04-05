@@ -98,6 +98,10 @@ window.addEventListener('load', () => {
         resetForm();
     });
 
+    //Get the quote form.
+    const quoteForm = document.getElementById('quote-calculator');
+    quoteForm.onsubmit = handleCalculation;
+
     //Load form inputs when refreshing the page.
     loadCalculation();
 });
@@ -221,5 +225,55 @@ function loadCalculation() {
 
             oneOffCount++;
         }
+    }
+}
+
+//Functio to handle calculating quote.
+function handleCalculation(event) {
+    //Prevent the form from submitting.
+    event.preventDefault(event);
+
+    //Get the data from the form.
+    const formData = new FormData(event.target);
+
+    //Check if the form is ready to be sent.
+    let send = true;
+
+    //Get the error message.
+    let errorMSG = document.getElementById("empty-form-fields");
+
+    //Check for empty fields.
+    for(let pair of formData.entries()) {
+        if(pair[1] == ""){
+            //Show error message.
+            errorMSG.style.display = "block";
+            send = false;
+            break;
+        } else{
+            errorMSG.style.display = "none";
+        }
+    }
+
+    //Print the form data to the console.
+    for(let pair of formData.entries()) {
+        console.log(pair[0]+ ', '+ pair[1]);
+    }
+
+    //Send the form data to the server.
+    if(send){
+        fetch("/Calculator", {
+            method: "POST",
+            body: new URLSearchParams(formData)
+        }).then(async response => {
+            if (response.status == 200){
+                //Get the response.
+                const body = await response.json()
+
+                //Display the quote.
+                document.getElementById("finalQuote").innerHTML = "£" + body.cost;
+
+                console.log(body.cost);
+            }
+        })
     }
 }
