@@ -200,10 +200,8 @@ app.post("/Calculator", express.urlencoded({
   //Get project quote data from the form.
   let totalCost = calculateQuote(req.body);
 
-  console.log(totalCost);
-
+  //Return the total cost.
   res.status(200).json({ message: "Success", cost: totalCost });
-
 });
 
 /*---Start Server---*/
