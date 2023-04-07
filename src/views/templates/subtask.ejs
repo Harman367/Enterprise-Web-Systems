@@ -1,9 +1,14 @@
 <!-- Subtask template-->
 
 <template id="subtaskTemplate">
-    <form method="post" class="quote-calculator">
+    <form method="post" class="quote-calculator subtask">
         <!--Subtask-->
         <h3 class="subtask-number"></h3>
+
+        <!--Remove subatask button-->
+        <button type="button" class="removeSubtask" onclick="removeInput(this)">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
 
         <!--Workers-->
         <h3>Worker(s)</h3>
