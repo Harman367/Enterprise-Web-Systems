@@ -56,31 +56,36 @@ export function calculateQuote(formData, fudge=true){
     }
 
 
-    //Check if ongoing form data is an array.
-    if(!Array.isArray(formData.costAmount)){
-        formData.costAmount = [formData.costAmount];
-        formData.costDuration = [formData.costDuration];
+    //Check if cost amount exists.
+    if(formData.costAmount != undefined){
+        //Check if ongoing form data is an array.
+        if(!Array.isArray(formData.costAmount)){
+            formData.costAmount = [formData.costAmount];
+            formData.costDuration = [formData.costDuration];
+        }
+
+        //Calculate ongoing costs.
+        for(let i = 0; i < formData.costAmount.length; i++){
+            //Add to total cost.
+            totalCost += (formData.costAmount[i] * fudgeFactorCost) * (formData.costDuration[i] * fudgeFactorTime);
+
+        }
     }
 
-    //Calculate ongoing costs.
-    for(let i = 0; i < formData.costAmount.length; i++){
-        //Add to total cost.
-        totalCost += (formData.costAmount[i] * fudgeFactorCost) * (formData.costDuration[i] * fudgeFactorTime);
+    //Check if one-off cost amount exists.
+    if(formData.oneCostAmount != undefined){
+        //Check if one-off form data is an array.
+        if(!Array.isArray(formData.oneCostAmount)){
+            formData.oneCostAmount = [formData.oneCostAmount];
+        }
 
+        //Calculate one-off costs.
+        for(let i = 0; i < formData.oneCostAmount.length; i++){
+            //Add to total cost.
+            totalCost += formData.oneCostAmount[i] * fudgeFactorCost;
+        }
     }
-
-
-    //Check if one-off form data is an array.
-    if(!Array.isArray(formData.oneCostAmount)){
-        formData.oneCostAmount = [formData.oneCostAmount];
-    }
-
-    //Calculate one-off costs.
-    for(let i = 0; i < formData.oneCostAmount.length; i++){
-        //Add to total cost.
-        totalCost += formData.oneCostAmount[i] * fudgeFactorCost;
-    }
-
+    
     //Return the rounded total cost.
     return Math.round(totalCost);
 }
