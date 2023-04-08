@@ -4,6 +4,7 @@ import express from "express";
 import mongoose from "mongoose";
 import session from "express-session";
 import userModel from "./models/user.js";
+import quoteModel from "./models/quote.js";
 import { calculateQuote } from "./public/scripts/calculator.js";
 
 //Initialize App
@@ -36,10 +37,7 @@ app.get("/", (req, res) => {
 //Account Route
 app.get("/Account", async (req, res) => {
   //Check if the user is logged in.
-  if(!req.session.loggedIn){
-    res.redirect("/");
-    return
-  }
+  checkLoggedIn(req, res);
 
   //Get current user.
   const username = req.session.currentuser;
@@ -106,7 +104,7 @@ app.post("/Login", express.urlencoded({
 
     //Set the session variables.
     req.session.loggedIn = true;
-    req.session.currentuser = username;
+    req.session.currentuser = user.username;
     req.session.admin = user.admin;
 
     //Login successful.
@@ -154,10 +152,7 @@ app.post("/UpdateUser", express.urlencoded({
   extended: true
 }), async (req, res) => {
   //Check if the user is logged in.
-  if(!req.session.loggedIn){
-    res.redirect("/");
-    return
-  }
+  checkLoggedIn(req, res);
 
   //Get the user data from the form.
   let userData = {
@@ -192,6 +187,62 @@ app.post("/UpdateUser", express.urlencoded({
   }
 });
 
+//Delete User Route
+app.post("/DeleteUser", express.urlencoded({
+  extended: true
+}), async (req, res) => {
+  //Check if the user is logged in.
+  checkLoggedIn(req, res);
+
+  //Get the current user.
+  const username = req.session.currentuser;
+  try{
+    await userModel.deleteOne({username: username});
+
+    //Destroy the session.
+    req.session.destroy();
+
+    //Delete successful.
+    res.status(200).json({ message: "Success" });
+
+  } catch(error){
+    res.status(401).json({ message: "Failed" });
+    console.error(error);
+  }
+});
+
+//Save Quote Route
+app.post("/SaveQuote", express.urlencoded({
+  extended: true
+}), async (req, res) => {
+  //Check if the user is logged in.
+  checkLoggedIn(req, res);
+
+  //Get the current user.
+  const username = req.session.currentuser;
+
+  //Create the quote data.
+  const quote = new quoteModel(req.body);
+
+  try{
+    //Save the quote.
+    await quote.save();
+
+    //Get the quote ID.
+    const quoteID = quote._id;
+
+    //Add the quote ID to the user's saved quotes.
+    await userModel.findOneAndUpdate({username: username}, {$push: {savedQuotes: quoteID}})
+
+    //Save successful.
+    res.status(200).json({ message: "Success" });
+
+  } catch(error){
+    res.status(401).json({ message: "Failed" });
+    console.error(error);
+  }
+});
+
 //Calculator Route
 app.post("/Calculator", express.urlencoded({
   extended: true
@@ -203,6 +254,16 @@ app.post("/Calculator", express.urlencoded({
   //Return the total cost.
   res.status(200).json({ message: "Success", cost: totalCost });
 });
+
+/*---Functions---*/
+
+//Function to check if the user is logged in.
+function checkLoggedIn(req, res){
+  if(!req.session.loggedIn){
+    res.redirect("/");
+    return
+  }
+}
 
 /*---Start Server---*/
 
