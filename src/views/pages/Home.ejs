@@ -24,8 +24,8 @@
             <div>
                 <h1>Project Quote Calculator</h1>
                 <p>Enter your details below to get a quote!</p> 
-                <button id="clear" type="button">Clear</button>
-                <button id="reset" type="button">Reset</button>
+                <button id="clear" type="button" onclick="clearForm()">Clear</button>
+                <button id="reset" type="button" onclick="resetForm()">Reset</button>
             </div>
 
             <!--Project Quote Calculator Form-->
@@ -35,7 +35,7 @@
 
                 <!--Subtask-->
                 <h2>Subtask(s)</h2>
-                <button id="addSubtask" type="button">+ Subtask</button>
+                <button id="addSubtask" type="button" onclick="createSubtask()">+ Subtask</button>
 
                 <!--Append subtasks-->
                 <div id="subtasks"></div>
@@ -43,7 +43,7 @@
                 <!--Fudge Factor-->
                 <% if (locals.admin) { %>
                     <label for="fudgeFactor">Use Fudge Factor</label>
-                    <input type="checkbox" name="fudgeFactor" id="fudgeFactor">
+                    <input type="checkbox" name="fudgeFactor" id="fudgeFactor" checked>
                 <% } %>
 
                 <!--Final Cost Button-->
@@ -63,13 +63,14 @@
                 </h4>
 
                 <!--Save Project Quote-->
-                <% if (locals.loggedin) { %>
+                <%# if (locals.loggedin) { %>
                     <div class="button-holder">
                         <label for="quoteName">Project Quote Name:</label>
                         <input type="text" name="quoteName" id="quoteName">
-                        <button id="button-save">Save Quote</button>
+                        <button id="button-save" onclick="saveQuote()">Save Quote</button>
+                        <h4 id="saveStatus"></h4>
                     </div>
-                <% } %>
+                <%# } %>
             </div>
         </main>
 
