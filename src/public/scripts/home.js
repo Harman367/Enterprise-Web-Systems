@@ -3,6 +3,22 @@
 //Array of subtasks
 let subtaskforms;
 
+//Run on page load.
+window.addEventListener('load', () => {
+    //Get subtask forms.
+    subtaskforms = document.getElementById("subtasks");
+
+    //Create subtask
+    createSubtask();
+
+    //Load form inputs when refreshing the page.
+    loadCalculation();
+});
+
+//Save form inputs when refreshing the page.
+window.onbeforeunload = function () {
+    saveCalculation();
+}
 
 //Function to create label and input field for a subtask.
 function createSubtask() {
@@ -11,6 +27,7 @@ function createSubtask() {
     const item = template.content.cloneNode(true);
     item.className = "subtask";
 
+    //Don't show remove button if there is only one subtask.
     if(subtaskforms.childElementCount === 0){
         item.querySelector('.removeSubtask').remove();
     }
@@ -21,7 +38,47 @@ function createSubtask() {
     //Get element to append to.
     subtaskforms.appendChild(item);
 
+    //Update subtask count.
     updateSubtaskCount()
+}
+
+//Function to add event listeners to the form.
+function addListeners(form) {   
+    //Add event listener to the add worker button.
+    form.querySelector('.addWorker').addEventListener('click', event => {
+        createInput('worker', '.workers', 'workerTemplate', event);
+    });
+
+    //Add event listener to the add ongoing cost button.
+    form.querySelector('.addOngoing').addEventListener('click', event => {
+        createInput('ongoingCost', '.ongoingCosts', 'ongoingTemplate', event);
+    });
+
+    //Add event listener to the add one off cost button.
+    form.querySelector('.addOneOff').addEventListener('click', event => {
+        createInput('oneOffCost', '.oneOffCosts', 'oneOffTemplate', event);
+    });
+
+    form.onsubmit = async e => {
+        //Prevent form from submitting.
+        e.preventDefault();
+
+        let useFudge;
+
+        try{
+            //Check if fudge factor is enabled.
+            useFudge = form.getElementsByClassName("fudgeFactorSub")[0].checked;
+        } catch (e) {
+            //If fudge factor is not enabled, set it to true.
+            useFudge = true;
+        }
+
+        //Get the form data.
+        const subtaskQuote = await calcSubtask(form, useFudge);
+
+        //Check if the quote is being calculated for a subtask.
+        form.querySelector(".button-holder > .subtask-quote").innerHTML = "£" + subtaskQuote.cost;
+    }
 }
 
 //Function to update subtask count.
@@ -82,10 +139,12 @@ function clearForm() {
     }
 
     //Clear the cost outputs.
-    const subtaskQuotes = document.getElementById('subtask-quote');
+    const subtaskQuotes = document.getElementsByClassName('subtask-quote');
     const finalQuote = document.getElementById('final-quote');
 
-    subtaskQuotes.innerHTML = "";
+    for(let quote of subtaskQuotes){
+        quote.innerHTML = "";
+    }
     finalQuote.innerHTML = "";
 
     //Save the form data.
@@ -96,213 +155,130 @@ function clearForm() {
 function resetForm() {
     clearForm();
 
-    //Get form rows
-    const workers = document.querySelectorAll('.worker');
-    const ongoingCosts = document.querySelectorAll('.ongoingCost');
-    const oneOffCosts = document.querySelectorAll('.oneOffCost');
+    //Get all forms.
+    const subtasks = subtaskforms.children;
 
-    //Remove all rows except the first.
-    for(let i = 1; i < workers.length; i++){
-        workers[i].remove();
+    //Remove all forms except the first one.
+    for(let i = 1; i < subtasks.length; i++){
+        subtasks[i].remove();
     }
 
-    for(let i = 1; i < ongoingCosts.length; i++){
-        ongoingCosts[i].remove();
-    }
-
-    for(let i = 1; i < oneOffCosts.length; i++){
-        oneOffCosts[i].remove();
-    }
+    //Update subtask count.
+    updateSubtaskCount();
 
     //Save the form data.
     saveCalculation();
 }
 
-//Add event listeners.
-window.addEventListener('load', () => {
-    //Add event listener to the clear button.
-    document.getElementById('clear').addEventListener('click', event => {
-        clearForm();
-    });
-
-    //Add event listener to the reset button.
-    document.getElementById('reset').addEventListener('click', event => {
-        resetForm();
-    });
-
-    //Add event listener to the add subtask button.
-    document.getElementById('addSubtask').addEventListener('click', event => {
-        createSubtask();
-    });
-
-    subtaskforms = document.getElementById("subtasks");
-
-    //Create subtask
-    createSubtask();
-
-    //Load form inputs when refreshing the page.
-    loadCalculation();
-});
-
-//Function to add event listeners to the form.
-function addListeners(form) {   
-    //Add event listener to the add worker button.
-    form.querySelector('.addWorker').addEventListener('click', event => {
-        createInput('worker', '.workers', 'workerTemplate', event);
-    });
-
-    //Add event listener to the add ongoing cost button.
-    form.querySelector('.addOngoing').addEventListener('click', event => {
-        createInput('ongoingCost', '.ongoingCosts', 'ongoingTemplate', event);
-    });
-
-    //Add event listener to the add one off cost button.
-    form.querySelector('.addOneOff').addEventListener('click', event => {
-        createInput('oneOffCost', '.oneOffCosts', 'oneOffTemplate', event);
-    });
-
-    form.onsubmit = async e => {
-        e.preventDefault();
-        const subtaskQuote = await calcSubtask(form);
-        //Check if the quote is being calculated for a subtask.
-        form.querySelector(".button-holder > .subtask-quote").innerHTML = "£" + subtaskQuote.cost;
-    }
-}
-
-
 //Save calculation form inputs to local storage.
 function saveCalculation() {
-    //Get the form.
-    const workers = document.querySelectorAll('.worker');
-    const ongoingCosts = document.querySelectorAll('.ongoingCost');
-    const oneOffCosts = document.querySelectorAll('.oneOffCost');
-
-    //Array to store the form data.
-    const calculationState = {
-        workers: [],
-        ongoingCosts: [],
-        oneOffCosts: []
-    }
-
-    //Get the form data.
-    for(let worker of workers){
-        calculationState.workers.push({
-            timeRequired: worker.querySelector('#timeRequired').valueAsNumber,
-            units: worker.querySelector('#units').value,
-            rate: worker.querySelector('#rate').value,
-            numWorkers: worker.querySelector('#numWorkers').valueAsNumber
-        });
-    }
-
-    for(let ongoingCost of ongoingCosts){
-        calculationState.ongoingCosts.push({
-            costName: ongoingCost.querySelector('#costName').value,
-            costAmount: ongoingCost.querySelector('#costAmount').valueAsNumber,
-            costFrequency: ongoingCost.querySelector('#costFrequency').value,
-            costDuration: ongoingCost.querySelector('#costDuration').valueAsNumber
-        });
-    }
-
-    for(let oneOffCost of oneOffCosts){
-        calculationState.oneOffCosts.push({
-            costName: oneOffCost.querySelector('#oneCostName').value,
-            costAmount: oneOffCost.querySelector('#oneCostAmount').valueAsNumber,
-        });
-    }
-
     //Set key for local storage.
     const name = "calculator"
 
     //Save the form data to local storage.
-    localStorage.setItem(name, JSON.stringify(calculationState));
-}
-
-//Save form inputs when refreshing the page.
-window.onbeforeunload = function () {
-    saveCalculation();
+    localStorage.setItem(name, JSON.stringify(packageQuote()));
 }
 
 //Load calculation form inputs from local storage.
 function loadCalculation() {
-    //Get the form.
-    const form = document.getElementById('quote-calculator');
-
     if(localStorage.getItem("calculator") != null){
         //Get the form data.
-        const calculationState = JSON.parse(localStorage.getItem("calculator"));
+        const subtasks = JSON.parse(localStorage.getItem("calculator"));
 
-        //Count the number of rows.
-        let workerCount = 0;
-        let ongoingCount = 0;
-        let oneOffCount = 0;
+        //Count the number of subtasks.
+        let subtaskCount = 0;
 
-        //Load the form data.
-        for(let worker of calculationState.workers){
-            //Create a new row if there are not enough rows.
-            if (document.querySelectorAll('.worker').length < calculationState.workers.length) {
-                createInput('worker', 'workers', 'workerTemplate');
+        //Loop through the subtasks.
+        subtasks.forEach(subtask =>{
+            //Create a new subtask if there are not enough subtasks.
+            if (document.querySelectorAll('.subtask').length < Object.keys(subtasks).length) {
+                createSubtask();
             }
 
-            //Get the row.
-            const workerRow = document.querySelectorAll('.worker')[workerCount];
+            //Get the subtask.
+            const subtaskForm = document.querySelectorAll('.subtask')[subtaskCount];
 
-            //Set the values.
-            workerRow.querySelector('#timeRequired').value = worker.timeRequired;
-            workerRow.querySelector('#units').value = worker.units;
-            workerRow.querySelector('#rate').value = worker.rate;
-            workerRow.querySelector('#numWorkers').value = worker.numWorkers;
+            //Count the number of rows.
+            let workerCount = 0;
+            let ongoingCount = 0;
+            let oneOffCount = 0;
 
-            workerCount++;
-        }
+            //Load the form data.
+            for(let worker of subtask.workers){
+                //Create a new row if there are not enough rows.
+                if (subtaskForm.querySelectorAll('.worker').length < subtask.workers.length) {
+                    createInput('worker', 'workers', 'workerTemplate');
+                }
 
-        for(let ongoingCost of calculationState.ongoingCosts){
-            //Create a new row if there are not enough rows.
-            if (document.querySelectorAll('.ongoingCost').length < calculationState.ongoingCosts.length) {
-                createInput('ongoingCost', 'ongoingCosts', 'ongoingTemplate');
+                //Get the row.
+                const workerRow = subtaskForm.querySelectorAll('.worker')[workerCount];
+
+                //Set the values.
+                workerRow.querySelector('.timeRequired').value = worker.timeRequired;
+                workerRow.querySelector('.units').value = worker.units;
+                workerRow.querySelector('.rate').value = worker.rate;
+                workerRow.querySelector('.numWorkers').value = worker.numWorkers;
+
+                workerCount++;
             }
 
-            //Get the row.
-            const ongoingCostRow = document.querySelectorAll('.ongoingCost')[ongoingCount];
+            for(let ongoingCost of subtask.ongoingCosts){
+                //Create a new row if there are not enough rows.
+                if (subtaskForm.querySelectorAll('.ongoingCost').length < subtask.ongoingCosts.length) {
+                    createInput('ongoingCost', 'ongoingCosts', 'ongoingTemplate');
+                }
 
-            //Set the values.
-            ongoingCostRow.querySelector('#costName').value = ongoingCost.costName;
-            ongoingCostRow.querySelector('#costAmount').value = ongoingCost.costAmount;
-            ongoingCostRow.querySelector('#costFrequency').value = ongoingCost.costFrequency;
-            ongoingCostRow.querySelector('#costDuration').value = ongoingCost.costDuration;
+                //Get the row.
+                const ongoingCostRow = subtaskForm.querySelectorAll('.ongoingCost')[ongoingCount];
 
-            ongoingCount++;
-        }
+                //Set the values.
+                ongoingCostRow.querySelector('.costName').value = ongoingCost.costName;
+                ongoingCostRow.querySelector('.costAmount').value = ongoingCost.costAmount;
+                ongoingCostRow.querySelector('.costFrequency').value = ongoingCost.costFrequency;
+                ongoingCostRow.querySelector('.costDuration').value = ongoingCost.costDuration;
 
-        for(let oneOffCost of calculationState.oneOffCosts){
-            //Create a new row if there are not enough rows.
-            if (document.querySelectorAll('.oneOffCost').length < calculationState.oneOffCosts.length) {
-                createInput('oneOffCost', 'oneOffCosts', 'oneOffTemplate');
+                ongoingCount++;
             }
 
-            //Get the row.
-            const oneOffCostRow = document.querySelectorAll('.oneOffCost')[oneOffCount];
+            for(let oneOffCost of subtask.oneOffCosts){
+                //Create a new row if there are not enough rows.
+                if (subtaskForm.querySelectorAll('.oneOffCost').length < subtask.oneOffCosts.length) {
+                    createInput('oneOffCost', 'oneOffCosts', 'oneOffTemplate');
+                }
 
-            //Set the values.
-            oneOffCostRow.querySelector('#oneCostName').value = oneOffCost.costName;
-            oneOffCostRow.querySelector('#oneCostAmount').value = oneOffCost.costAmount;
+                //Get the row.
+                const oneOffCostRow = subtaskForm.querySelectorAll('.oneOffCost')[oneOffCount];
 
-            oneOffCount++;
-        }
+                //Set the values.
+                oneOffCostRow.querySelector('.oneCostName').value = oneOffCost.costName;
+                oneOffCostRow.querySelector('.oneCostAmount').value = oneOffCost.costAmount;
+
+                oneOffCount++;
+            }
+            subtaskCount++;
+        });
     }
 }
 
-
 //Function to calculate the quote.
 async function calculateQuote() {
-    //Get all the forms
-    const forms = document.querySelectorAll('.quote-calculator');
+    //Check if fudge factor is enabled.
+    let useFudge;
+    
+    try{
+        //Check if fudge factor is enabled.
+        useFudge = document.getElementById("fudgeFactor").checked;
+    } catch (e) {
+        //If fudge factor is not enabled, set it to true.
+        useFudge = true;
+    }
 
     //Total quote cost.
     let totalCost = 0;
 
-    //Print the quote.
-    for(let form of forms){
-        totalCost += (await calcSubtask(form)).cost;
+    //Get the cost of each subtask.
+    for(const subtask of subtaskforms.children){
+        totalCost += (await calcSubtask(subtask, useFudge)).cost;
     }
 
     //Display the quote.
@@ -310,7 +286,7 @@ async function calculateQuote() {
 }
 
 //Function to calculate the cost of a subtask.
-function calcSubtask(form) {
+function calcSubtask(form, useFudge) {
     //Get the data from the form.
     const formData = new FormData(form);
 
@@ -320,6 +296,9 @@ function calcSubtask(form) {
     if(!send){
         return null;
     }
+
+    //Add the fudge factor to the form data.
+    formData.append("useFudge", useFudge);
 
     //Send the form data to the server.
     return fetch("/Calculator", {
@@ -353,5 +332,113 @@ function validateForm(formData) {
         }
     }
 
+    //Return if the form is ready to be sent.
     return send;
+}
+
+//Function to save the quote to the database.
+function saveQuote() {
+    //Get all the forms
+    const forms = packageQuote();
+
+    //Check if the forms are ready to be sent.
+    let send;
+
+    //Get the error message.
+    let errorMSG = document.getElementById("empty-form-fields");
+
+    //Check for empty fields.
+    for(let form of forms) {
+        //Get the data from the form.
+        const formData = new FormData(form);
+
+        if(!validateForm(formData)){
+            //Show error message.
+            errorMSG.style.display = "block";
+            send = false;
+            break;
+        } else{
+            errorMSG.style.display = "none";
+            send = true;
+        }
+    }
+
+    if(!send){
+        return null;
+    }
+
+    //Get the save status.
+    let save = document.getElementById("saveStatus");
+
+    //Send the form data to the server.
+    return fetch("/SaveQuote", {
+        method: "POST",
+        body: forms,
+    }).then(async response => {
+        switch (response.status) {
+            case 200: 
+                //Save successful.
+                save.innerHTML = "Quote saved successfully.";
+                break;
+            case 400:
+                //Save failed.
+                save.innerHTML = "Quote failed to save.";
+                break;
+        }
+    })
+}
+
+//Function to pacakge the quote data.
+function packageQuote() {
+    //Get all the forms.
+    const subtasks = subtaskforms.children;
+
+    //Array to store the subtask forms.
+    const calculationState = [];
+
+    Array.from(subtasks).forEach((subtask, index) => {
+        //Get the form.
+        let workers = subtask.querySelectorAll('.worker');
+        let ongoingCosts = subtask.querySelectorAll('.ongoingCost');
+        let oneOffCosts = subtask.querySelectorAll('.oneOffCost');
+
+        //Array to store the form data.
+        const subtaskForm = {
+            workers: [],
+            ongoingCosts: [],
+            oneOffCosts: []
+        }
+
+        //Get the form data.
+        for(let worker of workers){
+            subtaskForm.workers.push({
+                timeRequired: worker.querySelector('.timeRequired').valueAsNumber,
+                units: worker.querySelector('.units').value,
+                rate: worker.querySelector('.rate').value,
+                numWorkers: worker.querySelector('.numWorkers').valueAsNumber
+            });
+        }
+
+        for(let ongoingCost of ongoingCosts){
+            subtaskForm.ongoingCosts.push({
+                costName: ongoingCost.querySelector('.costName').value,
+                costAmount: ongoingCost.querySelector('.costAmount').valueAsNumber,
+                costFrequency: ongoingCost.querySelector('.costFrequency').value,
+                costDuration: ongoingCost.querySelector('.costDuration').valueAsNumber
+            });
+        }
+
+        for(let oneOffCost of oneOffCosts){
+            subtaskForm.oneOffCosts.push({
+                costName: oneOffCost.querySelector('.oneCostName').value,
+                costAmount: oneOffCost.querySelector('.oneCostAmount').valueAsNumber,
+            });
+        }
+
+        //Add the form data to the array.
+        calculationState.push(subtaskForm);
+    });
+
+    //Return the array.
+    return calculationState;
 }
