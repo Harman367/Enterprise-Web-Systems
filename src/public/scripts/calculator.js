@@ -1,11 +1,11 @@
 //Export funtion to calculate the project quote.
-export function calculateQuote(formData, fudge=true){
+export function calculateQuote(formData){
     //Create Fudge Factor.
     let fudgeFactorTime;
     let fudgeFactorCost;
 
     //Check if fudge factor is enabled.
-    if(fudge){
+    if(formData.useFudge === "true"){
         fudgeFactorTime = Math.random() * (1.11 - 0.9) + 0.9;
         fudgeFactorCost = Math.random() * (1.11 - 0.9) + 0.9;
     } else {
