@@ -339,13 +339,17 @@ function validateForm(formData) {
 //Function to save the quote to the database.
 function saveQuote() {
     //Get all the forms
-    const forms = packageQuote();
+    let forms = packageQuote(true);
+
+    //Get quote name.
+    const quoteName = document.getElementById("quoteName").value;
 
     //Check if the forms are ready to be sent.
     let send;
 
     //Get the error message.
     let errorMSG = document.getElementById("empty-form-fields");
+    let errorMSG2 = document.getElementById("empty-project-name");
 
     //Check for empty fields.
     for(let form of forms) {
@@ -363,6 +367,13 @@ function saveQuote() {
         }
     }
 
+    //Check if quote name is empty.
+    if(quoteName == ""){
+        //Show error message.
+        errorMSG2.style.display = "block";
+        send = false;
+    }
+
     if(!send){
         return null;
     }
@@ -370,10 +381,13 @@ function saveQuote() {
     //Get the save status.
     let save = document.getElementById("saveStatus");
 
+    //Package the quote data.
+    sendBody = {"subtasks": JSON.stringify(packageQuote()), "name": quoteName};
+
     //Send the form data to the server.
     return fetch("/SaveQuote", {
         method: "POST",
-        body: forms,
+        body: new URLSearchParams(sendBody),
     }).then(async response => {
         switch (response.status) {
             case 200: 
@@ -389,9 +403,14 @@ function saveQuote() {
 }
 
 //Function to pacakge the quote data.
-function packageQuote() {
+function packageQuote(db=false) {
     //Get all the forms.
     const subtasks = subtaskforms.children;
+
+    //Check if the quote is being saved to the database.
+    if(db){
+        return subtasks;
+    }
 
     //Array to store the subtask forms.
     const calculationState = [];
