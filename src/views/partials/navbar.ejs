@@ -48,6 +48,7 @@
                 <p id="failed-register" style="display:none">Username / Email Already Exists</p>
                 <p id="password-mismatch" style="display:none">Passwords do not match</p>
                 <p id="empty-fields" style="display:none">Please fill in all fields</p>
+                <p id="short-password" style="display:none">Password too short (8 or more characters)</p>
 
                 <form method="post" id="register-form">
                     <!--First Name-->
@@ -84,16 +85,6 @@
         </div>
 
     <% } else { %>
-
-        <% if (locals.admin) { %>
-            <!--Admin Button-->
-            <li class="navbar-item">
-                <a href="/Admin">
-                    <i class="fa-solid fa-user-cog"></i> Admin
-                </a>
-            </li>
-        <% } %>
-
         <!--Account Button-->
         <li class="navbar-item">
             <a href="/Account">
