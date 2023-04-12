@@ -63,14 +63,15 @@
                 </h4>
 
                 <!--Save Project Quote-->
-                <%# if (locals.loggedin) { %>
+                <% if (locals.loggedIn) { %>
                     <div class="button-holder">
+                        <p id="empty-project-name" style="display: none">Enter Project Name</p>
                         <label for="quoteName">Project Quote Name:</label>
                         <input type="text" name="quoteName" id="quoteName">
                         <button id="button-save" onclick="saveQuote()">Save Quote</button>
                         <h4 id="saveStatus"></h4>
                     </div>
-                <%# } %>
+                <% } %>
             </div>
         </main>
 
