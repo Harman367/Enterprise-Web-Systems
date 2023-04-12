@@ -75,6 +75,35 @@ app.get("/Logout", (req, res) => {
   res.redirect("/");
 });
 
+//Get Quotes Route
+app.get("/GetQuotes", async (req, res) => {
+  //Check if the user is logged in.
+  checkLoggedIn(req, res);
+
+  //Get the current user.
+  const username = req.session.currentuser;
+
+  try{
+    //Get the user document.
+    const quoteIDs = await userModel.findOne({username: username}, {savedQuotes: 1});
+
+    //Find the quotes.
+    const savedQuotes = await quoteModel.find({_id: {$in: quoteIDs.savedQuotes}});
+
+    //Remove the _id and __v fields.
+    for(let quote of savedQuotes){
+      delete quote._id;
+      delete quote.__v;
+    }
+
+    //Return the quotes.
+    res.status(200).json({ message: "Success", quotes: savedQuotes });
+  
+  } catch(error){
+    res.status(401).json({ message: "Failed" });
+    console.error(error);
+  }
+});
 
 /*---Post Routes---*/
 
@@ -221,8 +250,14 @@ app.post("/SaveQuote", express.urlencoded({
   //Get the current user.
   const username = req.session.currentuser;
 
+  //Get the quote data from the body.
+  let quoteData = {
+    "name": req.body.name,
+    "subtasks": req.body.subtasks,
+  }
+
   //Create the quote data.
-  const quote = new quoteModel(req.body);
+  const quote = new quoteModel(quoteData);
 
   try{
     //Save the quote.
