@@ -98,6 +98,17 @@ function handleRegister(event) {
         }
     }
 
+    errorMSG = document.getElementById("short-password");
+
+    //Check password length.
+    if(formData.get("password").length < 8 && formData.get("password") != ""){
+        //Show error message.
+        errorMSG.style.display = "block";
+        send = false;
+    } else{
+        errorMSG.style.display = "none";
+    }
+
     //Get the error message.
     errorMSG = document.getElementById("password-mismatch");
 
