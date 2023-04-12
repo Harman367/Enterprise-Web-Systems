@@ -22,18 +22,34 @@
         <main>
             <!--Page Heading-->
             <h1>Account Page</h1>
-            <p>Update your details or view saved quotes</p>
+            <p>Update your account details, view or merge saved quotes,</p>
+            <% if (user.admin) { %>
+                <p>Access admin settings.</p>
+            <% } %>
+
+            <!--Reference: https://www.w3schools.com/howto/howto_js_tabs.asp-->
+
+            <!--Tab Buttons-->
+            <div class="tab">
+                <button class="tablinks" onclick="openTab(event, 'user-details')">User Details</button>
+                <button class="tablinks" onclick="openTab(event, 'saved-quotes')">Saved Quotes</button>
+                <button class="tablinks" onclick="openTab(event, 'merge-quotes')">Merge Quotes</button>
+                <% if (user.admin) { %>
+                    <button class="tablinks" onclick="openTab(event, 'admin-settings')">Admin Settings</button>
+                <% } %>
+            </div>
 
             <!--User Details-->
-            <div>
-                <h2 id="user-details">User Details</h2>
+            <div id="user-details" class="tabcontent">
+                <h2 id="header-user-details">User Details</h2>
 
                 <!--Update Error-->
                 <p id="failed-update" style="display:none">Username / Email Already Exists</p>
                 <p id="failed-password" style="display:none">Password too short (8 or more characters)</p>
+                <p id="failed-fields" style="display:none">Please fill in all fields</p>
 
                 <!--Update Form-->
-                <form method="post" id="update-form" style="display: none;">
+                <form method="post" id="update-form">
                     <!--First Name-->
                     <label for="firstName">First Name:</label>
                     <input type="text" name="firstName" id="firstName_account" value="<%= user.firstName %>">
@@ -58,10 +74,41 @@
                     <label for="password">Password:</label>
                     <input type="password" name="password" id="password_account">
 
-                    <!--Update Butoon-->
+                    <!--Confirm Current Password-->
+                    <label for="currentPassword">Confirm Current Password:</label>
+                    <input type="password" name="currentPassword" id="currentPassword_account">
+
+                    <!--Update Button-->
                     <button type="submit">Update</button>
                 </form>
             </div>
+
+            <!--Saved Quotes-->
+            <div id="saved-quotes" class="tabcontent">
+                <h2 id="header-saved-quotes">Saved Quotes</h2>
+
+                <!--Select Quotes-->
+                <select name="Quotes" id="select-quote" onchange="showQuote(this)"></select>
+
+            </div>
+
+            <!--Merge Quotes-->
+            <div id="merge-quotes" class="tabcontent">
+                <h2 id="header-merge-quotes">Merge Quotes</h2>
+
+                <!--Merge Quotes-->
+                <div id="merge-quotes-list"></div>
+            </div>
+
+            <% if (user.admin) { %>
+                <!--Admin Settings-->
+                <div id="admin-settings" class="tabcontent">
+                    <h2 id="header-admin-settings">Admin Settings</h2>
+
+                    <!--Admin Settings-->
+                    <div id="admin-settings-list"></div>
+                </div>
+            <% } %>
         </main>
 
         <!--Footer-->
