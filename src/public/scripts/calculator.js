@@ -1,5 +1,5 @@
 //Export funtion to calculate the project quote.
-export function calculateQuote(formData){
+export function calculateQuote(formData, rates){
     //Create Fudge Factor.
     let fudgeFactorTime;
     let fudgeFactorCost;
@@ -46,9 +46,9 @@ export function calculateQuote(formData){
 
         //Check rate type.
         switch(formData.rate[i]){
-            case "junior": rate =  10; break;
-            case "standard": rate =  20; break;
-            case "senior": rate =  30; break;
+            case "junior": rate =  rates.junior; break;
+            case "standard": rate = rates.standard; break;
+            case "senior": rate =  rates.senior; break;
         }
 
         //Add to total cost.
