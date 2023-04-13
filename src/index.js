@@ -455,7 +455,7 @@ app.post("/UpdateRate", express.urlencoded({
 
 //Function to check if the user is logged in.
 function checkLoggedIn(req, res){
-  if(!req.session.loggedIn){
+  if(!req.session){
     res.redirect("/");
     return
   }
