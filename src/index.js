@@ -489,7 +489,7 @@ async function setupWorkerRate(){
 /*---Start Server---*/
 
 //Database Connection
-mongoose.connect(process.env.DB_HOST ?? "").then(() => {
+mongoose.connect(process.env.DB_HOST).then(() => {
   console.log("Connecting to database...");
 
   //Add the worker rate to the database.
