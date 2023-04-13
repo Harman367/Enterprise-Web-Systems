@@ -9,7 +9,7 @@
         <%- include('../partials/head') %>
 
         <!--Link JS-->
-        <script src="/scripts/account.js"></script>
+        <script src="/scripts/account.js" type="module"></script>
     </head>
 
     <body>
@@ -46,7 +46,7 @@
                 <!--Update Error-->
                 <p id="failed-update" style="display:none">Username / Email Already Exists</p>
                 <p id="failed-password" style="display:none">Password too short (8 or more characters)</p>
-                <p id="failed-fields" style="display:none">Please fill in all fields</p>
+                <p id="failed-fields" style="display:none">Please fill in all fields (except password)</p>
 
                 <!--Update Form-->
                 <form method="post" id="update-form">
@@ -79,8 +79,19 @@
                     <input type="password" name="currentPassword" id="currentPassword_account">
 
                     <!--Update Button-->
-                    <button type="submit">Update</button>
+                    <button type="submit">
+                        <i class="fa-solid fa-pen"></i> Update
+                    </button>
                 </form>
+
+                <!--Delete Account-->
+                <div id="delete_account">
+                    <label for="deletePassword">Confirm Current Password:</label>
+                    <input type="password" name="deletePassword" id="deletePassword_account">
+                    <button type="submit" id="delete-account">
+                        <i class="fa-solid fa-trash"></i> Delete Account
+                    </button>
+                </div>
             </div>
 
             <!--Saved Quotes-->
@@ -90,6 +101,30 @@
                 <!--Select Quotes-->
                 <select name="Quotes" id="select-quote" onchange="showQuote(this)"></select>
 
+                <!--Quote-->
+                <div id="account-partial" style="display: none;">
+                    <!--Quote Name-->
+                    <h1 id="project-title"></h1>
+
+                    <%- include('../templates/quoteForm') %>
+
+                    <!--Update Quote Button-->
+                    <div id="update-quote">
+                        <label for="change-quote-name">Change Project Name:</label>
+                        <input type="text" name="change-quote-name" id="newQuoteName">
+                        <button type="submit" id="update-quote-button" onclick="updateQuote()">
+                            <i class="fa-solid fa-pen"></i> Update Quote
+                        </button>
+                        <h4 id="saveStatus"></h4>
+                    </div>
+
+                    <!--Delete Quote Button-->
+                    <div id="delete-quote">
+                        <button type="submit" id="delete-quote-button" onclick="deleteQuote()">
+                            <i class="fa-solid fa-trash"></i> Delete Quote
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!--Merge Quotes-->
@@ -98,6 +133,21 @@
 
                 <!--Merge Quotes-->
                 <div id="merge-quotes-list"></div>
+
+                <i class="fa-solid fa-arrow-right"></i>
+
+                <!--Quotes to merge-->
+                <div id="quotes-to-merge"></div>
+
+                <div id="saveMerged" style="display: none;">
+                    <!--New quote name-->
+                    <label for="mergedQuoteName">Merged Quote Name:</label>
+                    <input type="text" name="mergedQuoteName" id="mergedQuoteName">
+
+                    <!--Save Merged Quote Button-->
+                    <button type="submit" id="save-merged-button" onclick="saveMerged()">
+                        <i class="fa-solid fa-save"></i> Save Merged Quote
+                </div>
             </div>
 
             <% if (user.admin) { %>
@@ -115,6 +165,12 @@
         <footer>
             <%- include('../partials/footer') %>
         </footer>
+
+        <!--Templates-->
+        <%- include('../templates/subtask') %>
+        <%- include('../templates/worker') %>
+        <%- include('../templates/ongoingCost') %>
+        <%- include('../templates/oneOffCost') %>
         
     </body>
 </html>
