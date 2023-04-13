@@ -1,0 +1,35 @@
+<!--Error Messages-->
+<p id="empty-form-fields" style="display:none">Please fill in all fields or remove empty fields</p>
+
+<!--Subtask-->
+<h2>Subtask(s)</h2>
+<button id="addSubtask" type="button" onclick="createSubtask()">
+    <i class="fa-solid fa-plus"></i> Subtask
+</button>
+
+<!--Append subtasks-->
+<div id="subtasks"></div>
+
+<!--Fudge Factor-->
+<% if (locals.admin) { %>
+    <label for="fudgeFactor">Use Fudge Factor</label>
+    <input type="checkbox" name="fudgeFactor" id="fudgeFactor" checked>
+<% } %>
+
+<!--Final Cost Button-->
+<div class="button-holder">
+    <button id="button-calculate-final" onclick="calculateQuote()">
+        <i class="fa-solid fa-calculator"></i> Calculate Quote
+    </button>
+    <h4 id="final-quote"></h4>
+</div>
+
+<!--Quote Explained-->
+<h4 id="quoteExplained">
+    Project Quote based on: 
+    + Estimated Time Required X Estimated Salary X Number of Workers
+    + Estimated Ongoing Costs X Estimated Ongoing Cost Duration
+    + Estimated One-off Costs
+
+    Working time: 8 hours per day, 5 days per week, 4 weeks per month
+</h4>
