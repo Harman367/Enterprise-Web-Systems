@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import session from "express-session";
 import userModel from "./models/user.js";
 import quoteModel from "./models/quote.js";
+import rateModel from "./models/rate.js";
 import { calculateQuote } from "./public/scripts/calculator.js";
 
 //Initialize App
@@ -89,12 +90,6 @@ app.get("/GetQuotes", async (req, res) => {
 
     //Find the quotes.
     const savedQuotes = await quoteModel.find({_id: {$in: quoteIDs.savedQuotes}});
-
-    //Remove the _id and __v fields.
-    for(let quote of savedQuotes){
-      delete quote._id;
-      delete quote.__v;
-    }
 
     //Return the quotes.
     res.status(200).json({ message: "Success", quotes: savedQuotes });
@@ -253,7 +248,7 @@ app.post("/SaveQuote", express.urlencoded({
   //Get the quote data from the body.
   let quoteData = {
     "name": req.body.name,
-    "subtasks": req.body.subtasks,
+    "subtasks": JSON.parse(req.body.subtasks),
   }
 
   //Create the quote data.
@@ -270,6 +265,115 @@ app.post("/SaveQuote", express.urlencoded({
     await userModel.findOneAndUpdate({username: username}, {$push: {savedQuotes: quoteID}})
 
     //Save successful.
+    res.status(200).json({ message: "Success" });
+
+  } catch(error){
+    res.status(401).json({ message: "Failed" });
+    console.error(error);
+  }
+});
+
+//Update Quote Route
+app.post("/UpdateQuote", express.urlencoded({
+  extended: true
+}), async (req, res) => {
+  //Check if the user is logged in.
+  checkLoggedIn(req, res);
+
+  //Get the user data from the form.
+  let quoteData = {
+    "name": req.body.name,
+    "subtasks": JSON.parse(req.body.subtasks),
+  }
+
+  try{
+    //Update the user data.
+    await quoteModel.findOneAndUpdate({_id: req.body.id}, quoteData)
+
+    //Update successful.
+    res.status(200).json({ message: "Success" });
+
+  } catch(error){
+    res.status(401).json({ message: "Failed" });
+    console.error(error);
+  }
+});
+
+//Delete Quote Route
+app.post("/DeleteQuote", express.urlencoded({
+  extended: true
+}), async (req, res) => {
+  //Check if the user is logged in.
+  checkLoggedIn(req, res);
+
+  //Get the current user.
+  const username = req.session.currentuser;
+
+  try{
+    //Delete the quote.
+    await quoteModel.deleteMany({_id: {$in: req.body.id}});
+
+    //Remove the quote ID from the user's saved quotes.
+    await userModel.findOneAndUpdate({username: username}, {$pull: {savedQuotes: req.body.id}})
+
+    //Delete successful.
+    res.status(200).json({ message: "Success" });
+  
+  } catch(error){
+    res.status(401).json({ message: "Failed" });
+    console.error(error);
+  }
+});
+
+//Merge Quotes Route
+app.post("/MergeQuotes", express.urlencoded({
+  extended: true
+}), async (req, res) => {
+  //Check if the user is logged in.
+  checkLoggedIn(req, res);
+
+  //Get the current user.
+  const username = req.session.currentuser;
+
+  //Parse the quote IDs.
+  req.body.ids = JSON.parse(req.body.ids);
+
+  //Get quotes and merge them.
+  try{
+    //Find the quotes.
+    const savedQuotes = await quoteModel.find({_id: {$in: req.body.ids}});
+
+    //Merge the quotes.
+    let mergedQuote = [];
+
+    //Loop through the quotes.
+    for(let i = 0; i < savedQuotes.length; i++){
+      //Get the quote.
+      mergedQuote = mergedQuote.concat(savedQuotes[i].subtasks);
+    }
+
+    //Create the quote data.
+    const newQuote = new quoteModel({
+      "name": req.body.name,
+      "subtasks": mergedQuote,
+    });
+
+    //Save the quote.
+    await newQuote.save();
+
+    //Get the quote ID.
+    const quoteID = newQuote._id;
+
+    //Add the quote ID to the user's saved quotes.
+    await userModel.findOneAndUpdate({username: username}, {$push: {savedQuotes: quoteID}})
+
+    //Delete the old quotes.
+    await quoteModel.deleteMany({_id: {$in: req.body.ids}});
+
+    //Remove the quote ID from the user's saved quotes.
+    await userModel.findOneAndUpdate({username: username}, {$pullAll: {savedQuotes: req.body.ids}})
+
+    //Merge successful.
     res.status(200).json({ message: "Success" });
 
   } catch(error){
@@ -300,11 +404,39 @@ function checkLoggedIn(req, res){
   }
 }
 
+//Fuinction setup worker rate.
+async function setupWorkerRate(){
+  //Set the worker rates.
+  let workerRateData = {
+    "junior": 10,
+    "standard": 20,
+    "senior": 30
+  }
+
+  //Create the model.
+  const workerRate = new rateModel(workerRateData);
+
+  try{
+    const check = (await rateModel.find({junior: { $exists: true}})).length;
+
+    //Check if the worker rate already exists.
+    if(check === 0){
+      //Save the worker rates.
+      workerRate.save();
+    }
+  } catch(error){
+    console.error(error);
+  }
+}
+
 /*---Start Server---*/
 
 //Database Connection
 mongoose.connect(process.env.DB_HOST ?? "").then(() => {
   console.log("Connecting to database...");
+
+  //Add the worker rate to the database.
+  setupWorkerRate();
 
   //Start Server
   app.listen(app.get("port"), () => console.log(`Listening on: http://localhost:${app.get("port")}`));
