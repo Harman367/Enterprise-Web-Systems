@@ -9,14 +9,19 @@ let displayedQuote;
 
 //Run on page load.
 window.addEventListener("load", async () => {
-    //Get update form.
-    const updateForm = document.getElementById("update-form");
-
-    //Add event listener to the update form.
-    updateForm.onsubmit = updateUserDetails;
-
     //Get all quotes from the database.
     getQuotes();
+
+    //Get all the pay grades from the database.
+    getRates();
+
+    //Get update form.
+    const updateForm = document.getElementById("update-form");
+    updateForm.onsubmit = updateUser;
+
+    //Get the form.
+    const payForm = document.getElementById("pay-grades-form");
+    payForm.onsubmit = updateRates;
 });
 
 //Function to get all quotes from the database.
@@ -46,6 +51,43 @@ function getQuotes(){
                 break;
         }
     })
+}
+
+//Function to get all the pay grades from the database.
+function getRates(){
+    //Get the pay grades from the database.
+    fetch("/GetRates", {
+        method: "GET"
+    }).then(async response => {
+        //Switch statement
+        switch (response.status) {
+            case 200:
+                //Get the pay grades.
+                const rates = (await response.json()).rates[0];
+
+                //Set the pay grades.
+                setRates(rates);
+
+                break;
+
+            case 401:
+                console.log("Failed to get rates.");
+                break;
+        }
+    })
+}
+
+//Function to set the pay grades.
+function setRates(rates){
+    //Get the input fields.
+    const junior = document.getElementById("junior-paygrade");
+    const standard = document.getElementById("standard-paygrade");
+    const senior = document.getElementById("senior-paygrade");
+
+    //Set the pay grades.
+    junior.value = rates.junior;
+    standard.value = rates.standard;
+    senior.value = rates.senior;
 }
 
 //Function to add the quote selector.
@@ -97,7 +139,7 @@ function addQuotesToMergeList(){
 }
 
 //Function to open tab.
-window.openTab = function (event, tabName){
+window.openTab = function(tabName){
     //Hide all tabs.
     let tabs = document.getElementsByClassName("tabcontent");
     for(let i = 0; i < tabs.length; i++){
@@ -109,12 +151,12 @@ window.openTab = function (event, tabName){
 }
 
 //Function to update the user's account information
-function updateUserDetails(event){
+function updateUser(event){
     //Prevent the form from submitting.
     event.preventDefault();
 
     //Get the data from the form.
-    formData = new FormData(event.target);
+    const formData = new FormData(this);
 
     //Check if the form is ready to be sent.
     let send = true;
@@ -150,28 +192,69 @@ function updateUserDetails(event){
         }
     }
 
-    //Send the form data to the server.
-    if(send){
-        fetch("/UpdateUser", {
-            method: "POST",
-            body: new URLSearchParams(formData)
-        }).then(response => {
-            //Switch statement
-            switch (response.status) {
-                case 200: 
-                    //Update successful.
-                    alert("Update successful!");
-                    break;
-
-                case 401:
-                    //Update failed.
-                    errorMSG = document.getElementById("failed-update");
-                    errorMSG.style.display = "block";
-                    break;
-            }
-        })
+    //Check if form is ready to be sent.
+    if(!send){
+        return;
     }
+
+    //Send the form data to the server.
+    fetch("/UpdateUser", {
+        method: "POST",
+        body: new URLSearchParams(formData)
+    }).then(response => {
+        //Switch statement
+        switch (response.status) {
+            case 200: 
+                //Update successful.
+                alert("Update successful!");
+                break;
+
+            case 401:
+                //Update failed.
+                errorMSG = document.getElementById("failed-update");
+                errorMSG.style.display = "block";
+                break;
+        }
+    })
+
 }
+
+//Function to delete the user's account.
+window.deleteUser = function(){
+    //Get the user's password.
+    const password = document.getElementById("deletePassword_account").value;
+
+    //Error message.
+    let errorMSG = document.getElementById("failed-delete");
+
+    let send;
+
+    //Check if ready to send.
+    if(password === "" || password.length < 8){
+        //Show error message.
+        errorMSG.style.display = "block";
+        send = false;
+    } else{
+        errorMSG.style.display = "none";
+        send = true;
+    }
+
+    //Check if ready to send.
+    if(!send){
+        return;
+    }
+
+    //Send the password to the server.
+    fetch("/DeleteUser", {
+        method: "POST",
+        body: new URLSearchParams({password: password})
+    }).then(response => {
+        if(response.status == 401){
+            //Show error message.
+            errorMSG.style.display = "block";
+        }
+    })
+}       
 
 //Function to show the selected quote.
 window.showQuote = function(event){
@@ -382,6 +465,56 @@ window.saveMerged = function(){
             case 400:
                 //Merge failed.
                 alert("Failed to merge.");
+                break;
+        }
+    })
+}
+
+//Function to update the rate.
+function updateRates(event){
+    //Prevent the form from submitting.
+    event.preventDefault();
+
+    //Get the data from the form.
+    const formData = new FormData(this);
+
+    //Check if the form is ready to be sent.
+    let send;
+
+    //Get error message.
+    const error = document.getElementById("rateError");
+
+    //Check if the form is ready to be sent.
+    for (const entry of formData.entries()) {
+        if(entry[1] === "" || entry[1] === 0){
+            error.style.display = "block";
+            send = false;
+            break;
+        } else{
+            error.style.display = "none";
+            send = true;
+        }
+    }
+
+    //Check if the form is ready to be sent.
+    if(!send){
+        return;
+    }
+
+    //Send the form data to the server.
+    fetch("/UpdateRate", {
+        method: "POST",
+        body: new URLSearchParams(formData)
+    }).then(async response => {
+        switch (response.status) {
+            case 200: 
+                //Update successful.
+                alert("Update successful.");
+                break;
+
+            case 400:
+                //Update failed.
+                alert("Failed to update.");
                 break;
         }
     })
