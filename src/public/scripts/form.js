@@ -29,17 +29,17 @@ window.createSubtask = function () {
 function addListeners(form) {   
     //Add event listener to the add worker button.
     form.querySelector('.addWorker').addEventListener('click', event => {
-        createInput('worker', '.workers', 'workerTemplate', event.target.parentElement);
+        createInput('worker', '.workers', 'workerTemplate', event.target.parentElement.parentElement);
     });
 
     //Add event listener to the add ongoing cost button.
     form.querySelector('.addOngoing').addEventListener('click', event => {
-        createInput('ongoingCost', '.ongoingCosts', 'ongoingTemplate', event.target.parentElement);
+        createInput('ongoingCost', '.ongoingCosts', 'ongoingTemplate', event.target.parentElement.parentElement);
     });
 
     //Add event listener to the add one off cost button.
     form.querySelector('.addOneOff').addEventListener('click', event => {
-        createInput('oneOffCost', '.oneOffCosts', 'oneOffTemplate', event.target.parentElement);
+        createInput('oneOffCost', '.oneOffCosts', 'oneOffTemplate', event.target.parentElement.parentElement);
     });
 
     form.onsubmit = async e => {
@@ -58,6 +58,8 @@ function addListeners(form) {
 
         //Get the form data.
         const subtaskQuote = await calcSubtask(form, useFudge);
+
+        console.log(subtaskQuote.cost);
 
         //Check if the quote is being calculated for a subtask.
         form.querySelector(".button-holder > .subtask-quote").innerHTML = "£" + subtaskQuote.cost;
