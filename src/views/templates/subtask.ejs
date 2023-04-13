@@ -2,30 +2,33 @@
 
 <template id="subtaskTemplate">
     <form method="post" class="quote-calculator subtask">
-        <!--Subtask-->
-        <h3 class="subtask-number"></h3>
+        <div class="subtask-header">
+            <!--Subtask-->
+            <h2 class="subtask-number"></h2>
 
-        <!--Remove subatask button-->
-        <button type="button" class="removeSubtask" onclick="removeInput(this)">
-            <i class="fa-solid fa-xmark"></i>
-        </button>
+            <!--Remove subatask button-->
+            <button type="button" class="removeSubtask" onclick="removeInput(this.parentElement)">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
 
         <!--Workers-->
-        <h3>Worker(s)</h3>
-        <button class="addWorker" type="button">
-            <i class="fa-solid fa-plus"></i> Worker
-        </button>
+        <div class="subtask-header">
+            <h3>Worker(s)</h3>
+            <button class="addWorker" type="button">
+                <i class="fa-solid fa-plus"></i> Worker
+            </button>
+        </div>
+
+        <label for="timeRequired">Time Required:</label>
+        <label for="rate">Rate:</label>
+        <label for="numWorkers">Amount:</label>
 
         <!--Append workers-->
         <div class="workers">
-            <!--Input Labels-->
-            <label for="timeRequired">Time Required:</label>
-            <label for="rate">Rate:</label>
-            <label for="numWorkers">Amount:</label>
-
             <div class="worker">
                 <!--Time required and units of time-->
-                <div>
+                <div class="form-group">
                     <input type="number" name="timeRequired" class="timeRequired" min="1">
                     <select name="units" class="units">
                         <option value="hours">Hours</option>
@@ -35,45 +38,55 @@
                     </select>
                 </div>
 
-                <!--Worker Rate-->                            
-                <select name="rate" class="rate">
-                    <option value="junior">Junior</option>
-                    <option value="standard">Standard</option>
-                    <option value="senior">Senior</option>
-                </select>
+                <!--Worker Rate-->  
+                <div class="form-group">                       
+                    <select name="rate" class="rate">
+                        <option value="junior">Junior</option>
+                        <option value="standard">Standard</option>
+                        <option value="senior">Senior</option>
+                    </select>
+                </div> 
 
                 <!--Number of Workers-->
-                <input type="number" name="numWorkers" class="numWorkers" min="1">
+                <div class="form-group">
+                    <input type="number" name="numWorkers" class="numWorkers" min="1">
+                </div>
             </div>
         </div>
 
         <!--Ongoing Cost-->
-        <h3>Ongoing Costs</h3>
-        <button class="addOngoing" type="button">
-            <i class="fa-solid fa-plus"></i> Ongoing Cost
-        </button>
+        <div class="subtask-header">
+            <h3>Ongoing Costs</h3>
+            <button class="addOngoing" type="button">
+                <i class="fa-solid fa-plus"></i> Ongoing Cost
+            </button>
+        </div>
 
         <!--Append ongoing costs-->
         <div class="ongoingCosts">
             <!--Input Labels-->
             <label for="costName">Name:</label>
-            <label for="costAmount">Amount:</label>
-            <label for="costFrequency">Frequency:</label>
+            <label for="costAmount">Cost:</label>
             <label for="costDuration">Duration:</label>
         </div>
 
         <!--One-off Cost-->
-        <h3>One-off Costs</h3>
-        <button class="addOneOff" type="button">
-            <i class="fa-solid fa-plus"></i> One-off Cost
-        </button>
+        <div class="subtask-header">
+            <h3>One-off Costs</h3>
+            <button class="addOneOff" type="button">
+                <i class="fa-solid fa-plus"></i> One-off Cost
+            </button>
+        </div>
 
         <!--Append one-off costs-->
         <div class="oneOffCosts">
             <!--Input Labels-->
             <label for="oneCostName">Name:</label>
-            <label for="oneCostAmount">Amount:</label>
+            <label for="oneCostAmount">Cost:</label>
         </div>
+
+        <!--Error Messages-->
+        <p id="empty-form-fields" style="display:none">Please fill in all fields or remove empty fields</p>
 
         <!--Fudge Factor-->
         <% if (locals.admin) { %>

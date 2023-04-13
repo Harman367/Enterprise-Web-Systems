@@ -19,10 +19,10 @@
         </nav>
 
         <!--Main-->
-        <main>
+        <main class="page-wrap">
             <!--Page Heading-->
             <h1>Account Page</h1>
-            <p>Update your account details, view or merge saved quotes,</p>
+            <p>Update your account details, view or merge saved quotes.</p>
             <% if (user.admin) { %>
                 <p>Access admin settings.</p>
             <% } %>
@@ -31,11 +31,11 @@
 
             <!--Tab Buttons-->
             <div class="tab">
-                <button class="tablinks" onclick="openTab(event, 'user-details')">User Details</button>
-                <button class="tablinks" onclick="openTab(event, 'saved-quotes')">Saved Quotes</button>
-                <button class="tablinks" onclick="openTab(event, 'merge-quotes')">Merge Quotes</button>
+                <button class="tablinks" onclick="openTab('user-details')">User Details</button>
+                <button class="tablinks" onclick="openTab('saved-quotes')">Saved Quotes</button>
+                <button class="tablinks" onclick="openTab('merge-quotes')">Merge Quotes</button>
                 <% if (user.admin) { %>
-                    <button class="tablinks" onclick="openTab(event, 'admin-settings')">Admin Settings</button>
+                    <button class="tablinks" onclick="openTab('admin-settings')">Admin Settings</button>
                 <% } %>
             </div>
 
@@ -44,7 +44,7 @@
                 <h2 id="header-user-details">User Details</h2>
 
                 <!--Update Error-->
-                <p id="failed-update" style="display:none">Username / Email Already Exists</p>
+                <p id="failed-update" style="display:none">Username / Email Already Exists or current password incorrect.</p>
                 <p id="failed-password" style="display:none">Password too short (8 or more characters)</p>
                 <p id="failed-fields" style="display:none">Please fill in all fields (except password)</p>
 
@@ -79,16 +79,17 @@
                     <input type="password" name="currentPassword" id="currentPassword_account">
 
                     <!--Update Button-->
-                    <button type="submit">
+                    <button type="submit" id="account-update-button">
                         <i class="fa-solid fa-pen"></i> Update
                     </button>
                 </form>
 
                 <!--Delete Account-->
                 <div id="delete_account">
+                    <p id="failed-delete" style="display:none">Incorrect Password!</p>
                     <label for="deletePassword">Confirm Current Password:</label>
                     <input type="password" name="deletePassword" id="deletePassword_account">
-                    <button type="submit" id="delete-account">
+                    <button type="submit" id="delete-account" onclick="deleteUser()">
                         <i class="fa-solid fa-trash"></i> Delete Account
                     </button>
                 </div>
@@ -112,7 +113,7 @@
                     <div id="update-quote">
                         <label for="change-quote-name">Change Project Name:</label>
                         <input type="text" name="change-quote-name" id="newQuoteName">
-                        <button type="submit" id="update-quote-button" onclick="updateQuote()">
+                        <button type="submit" id="update-quote-button" onclick="updateQuote(this)">
                             <i class="fa-solid fa-pen"></i> Update Quote
                         </button>
                         <h4 id="saveStatus"></h4>
@@ -131,13 +132,15 @@
             <div id="merge-quotes" class="tabcontent">
                 <h2 id="header-merge-quotes">Merge Quotes</h2>
 
-                <!--Merge Quotes-->
-                <div id="merge-quotes-list"></div>
+                <div id="merge-box">
+                    <!--Merge Quotes-->
+                    <div id="merge-quotes-list"></div>
 
-                <i class="fa-solid fa-arrow-right"></i>
+                    <i class="fa-solid fa-arrow-right"></i>
 
-                <!--Quotes to merge-->
-                <div id="quotes-to-merge"></div>
+                    <!--Quotes to merge-->
+                    <div id="quotes-to-merge"></div>
+                </div>
 
                 <div id="saveMerged" style="display: none;">
                     <!--New quote name-->
@@ -154,9 +157,27 @@
                 <!--Admin Settings-->
                 <div id="admin-settings" class="tabcontent">
                     <h2 id="header-admin-settings">Admin Settings</h2>
+                    <h3 id="pay-grade-title">Pay Grades:</h3>
 
                     <!--Admin Settings-->
-                    <div id="admin-settings-list"></div>
+                    <form id="pay-grades-form">
+                        <!--Pay grade inputs-->
+                        <label for="junior">Junior</label>
+                        <input type="number" name="junior" id="junior-paygrade">
+
+                        <label for="standard">Standard</label>
+                        <input type="number" name="standard" id="standard-paygrade">
+
+                        <label for="senior">Senior</label>
+                        <input type="number" name="senior" id="senior-paygrade">
+
+                        <p id="rateError" style="display:none">Please fill in all fields with value > 0.</p>
+
+                        <!--Update Pay Grades-->
+                        <button type="submit" id="update-pay-grades">
+                            <i class="fa-solid fa-pen"></i> Update Pay Grades
+                        </button>
+                    </form>
                 </div>
             <% } %>
         </main>

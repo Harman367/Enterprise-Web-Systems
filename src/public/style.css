@@ -1,24 +1,206 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
 /*Navbar*/
+
+.navbar {
+    display: flex;
+    background-color: #242424;
+    color: white;
+    padding: 16px;
+    justify-content: center;
+}
+
+.navbar-content {
+    list-style: none;
+    display: flex;
+    justify-content: flex-end;
+    width: 1000px;
+    gap: 16px;
+    align-items: center;
+}
+
+.navbar a{
+    color: inherit;
+    text-decoration: none;
+}
+
+.home-item {
+    margin-right: auto;
+}
+
+.dropdown {
+    position: relative;
+}
 
 /*Hide dropdown form*/
 .dropdown-content:not(.show) {
     display: none;
 }
 
-/*Solid border around the login form*/
-.dropdown-content > form {
-    border-style: solid;
-}
-
 /*Forms show above all other elements*/
 .dropdown-content {
     position: absolute;
     background-color: #f9f9f9;
+    right: 0;
+    color: #242424;
+    padding: 8px;
+    box-shadow: 0 2px 3px #242424;
+}
+
+.dropdown-content input{
+    margin-bottom: 8px;
+    height: 24px;
+}
+
+/*Buttons*/
+
+button {
+    height: 28px;
+    border-radius: 4px;
+    padding: 0 8px;
+    cursor: pointer;
+    border: 0;
+}
+
+button.primary {
+    background-color: #CD5C5C;
+    color: white;
+}
+
+button.secondary {
+    background-color: rgb(205, 92, 92, 0.25);
+    border: 1px solid #CD5C5C;
+    color: white;
+}
+
+/*Home Page*/
+.page-wrap {
+    width: 1000px;
+    margin: 0 auto;
+    padding-top: 25px;
+    padding-bottom: 25px;
+}
+
+#subtasks {
+    padding-top: 16px;
+}
+
+.subtask {
+    border: 1px solid gray;
+    padding: 16px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+}
+
+.subtask-header {
+    display: flex;
+    margin: 8px 0;
+    align-items: center;
+    gap: 8px;
+    padding-top: 15px;
+}
+
+.form-group {
+    padding: 8px 0;
+}
+
+#clear-reset{
+    padding-top: 15px;
+}
+
+.worker > div{
+    display: inline-block;
+}
+
+.quote-calculator > label, .ongoingCosts > label, .oneOffCosts > label{
+    padding-right: 125px;
+}
+
+.subtask-quote, .fudgeFactorSub, .button-holder, #final-quote, #quoteExplained,
+#user-details, #update-form, #saved-quotes, #account-partial, #update-quote, #delete-quote,
+#merge-box, #saveMerged, #admin-settings, #pay-grade-title{
+    padding-top: 15px;
 }
 
 /*Account Page*/
 
 /*Tab*/
+.tab {
+    padding-top: 25px;
+}
+
+.tab button{
+    font-size: large;
+    padding-left: 50px;
+    padding-right: 50px;
+    margin-right: 25px;
+    align-items: center;
+}
+
 .tabcontent {
     display: none;
+}
+
+/*User details*/
+#update-form > input{
+    width: 100%;
+    height: 25px;
+}
+
+#update-form > label{
+    display: block;
+    padding-top: 10px;
+}
+
+#account-update-button{
+    margin-top: 25px;
+}
+
+#delete_account {
+    margin-top: 25px;
+}
+
+/*View Quote*/
+#select-quote {
+    height: 25px;
+    width: 100px;
+}
+
+#select-quote > option {
+    height: 25px;
+}
+
+/*Merge Quotes*/
+#merge-quotes-list, #quotes-to-merge {
+    border: 1px solid #242424;
+    width: 25%;
+}
+
+#merge-quotes-list > div, #quotes-to-merge > div{
+    display: flex
+}
+
+#merge-box > * {
+    margin-right: 15px;
+}
+
+#merge-box {
+    display: flex;
+}
+
+
+/*Footer*/
+footer {
+    background-color: #242424;
+    color: white;
+    padding: 16px;
+    justify-content: center;
 }

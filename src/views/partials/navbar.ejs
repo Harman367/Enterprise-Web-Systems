@@ -1,102 +1,105 @@
 <!--Navigation Bar-->
 
-<ul class="navbar">
-    <li class="navbar-item">
-        <a href="/">
-            <!--Home Icon-->
-            <i class="fa-solid fa-house"></i> Home
-        </a>
-    </li>
-
-    <!--Check if logged in and change navbar.-->
-    <% if (!locals.loggedIn) { %> 
-        <!--Login Button-->
-        <div class="dropdown">
-            <button class="drop-button" onclick="openDropdown('login-form-container', 'register-form-container')">
-                <i class="fa-solid fa-right-to-bracket"></i> Login
-            </button>  
-
-            <!--Login Form-->
-            <div class="dropdown-content" id="login-form-container">
-                <!--Login Error-->
-                <p id="failed-login" style="display:none">Username / Password Incorrect</p>
-
-                <form method="post" id="login-form">
-                    <!--Username-->
-                    <label for="username">Username:</label>
-                    <input type="text" name="username" id="login-username">
-
-                    <!--Password-->
-                    <label for="password">Password:</label>
-                    <input type="password" name="password" id="login-password">
-
-                    <!--Login Button-->
-                    <button>Login</button>
-                </form>
+<div class="navbar">
+    <ul class="navbar-content">
+        <li class="navbar-item home-item">
+            <a href="/">
+                <!--Home Icon-->
+                <i class="fa-solid fa-house"></i> Home
+            </a>
+        </li>
+    
+        <!--Check if logged in and change navbar.-->
+        <% if (!locals.loggedIn) { %> 
+            <!--Login Button-->
+            <li class="dropdown">
+                <button class="drop-button primary" onclick="openDropdown('login-form-container', 'register-form-container')">
+                    <i class="fa-solid fa-right-to-bracket"></i> Login
+                </button>  
+    
+                <!--Login Form-->
+                <div class="dropdown-content" id="login-form-container">
+                    <!--Login Error-->
+                    <p id="failed-login" style="display:none">Username / Password Incorrect</p>
+    
+                    <form method="post" id="login-form">
+                        <!--Username-->
+                        <label for="username">Username:</label>
+                        <input type="text" name="username" id="login-username">
+    
+                        <!--Password-->
+                        <label for="password">Password:</label>
+                        <input type="password" name="password" id="login-password">
+    
+                        <!--Login Button-->
+                        <button class="primary">Login</button>
+                    </form>
+                </div>
+            </li>
+            
+            <!--Register Button-->
+            <li class="dropdown">
+                <button class="drop-button secondary" onclick="openDropdown('register-form-container', 'login-form-container')">
+                    <i class="fa-solid fa-address-card"></i> Register
+                </button>
+    
+                <!--Register Form-->
+                <div class="dropdown-content" id="register-form-container">
+                    <!--Register Error-->
+                    <p id="failed-register" style="display:none">Username / Email Already Exists</p>
+                    <p id="password-mismatch" style="display:none">Passwords do not match</p>
+                    <p id="empty-fields" style="display:none">Please fill in all fields</p>
+                    <p id="short-password" style="display:none">Password too short (8 or more characters)</p>
+    
+                    <form method="post" id="register-form">
+                        <!--First Name-->
+                        <label for="firstName">First Name:</label>
+                        <input type="text" name="firstName" id="firstName">
+    
+                        <!--Last Name-->
+                        <label for="lastName">Last Name:</label>
+                        <input type="text" name="lastName" id="lastName">
+    
+                        <!--Email-->
+                        <label for="email">Email:</label>
+                        <input type="email" name="email" id="email">
+    
+                        <!--Company-->
+                        <label for="company">Company:</label>
+                        <input type="text" name="company" id="company">
+    
+                        <!--Username-->
+                        <label for="username">Username:</label>
+                        <input type="text" name="username" id="username">
+    
+                        <!--Password-->
+                        <label for="password">Password:</label>
+                        <input type="password" name="password" id="password">
+    
+                        <!--Confirm Password-->
+                        <label for="password">Confirm Password:</label>
+                        <input type="password" name="confirm-password" id="confirm-password">
+    
+                        <!--Register Button-->
+                        <button class="primary">Register</button>
+                    </form>
             </div>
-        </div>
-        
-        <!--Register Button-->
-        <div class="dropdown">
-            <button class="drop-button" onclick="openDropdown('register-form-container', 'login-form-container')">
-                <i class="fa-solid fa-address-card"></i> Register
-            </button>
-
-            <!--Register Form-->
-            <div class="dropdown-content" id="register-form-container">
-                <!--Register Error-->
-                <p id="failed-register" style="display:none">Username / Email Already Exists</p>
-                <p id="password-mismatch" style="display:none">Passwords do not match</p>
-                <p id="empty-fields" style="display:none">Please fill in all fields</p>
-                <p id="short-password" style="display:none">Password too short (8 or more characters)</p>
-
-                <form method="post" id="register-form">
-                    <!--First Name-->
-                    <label for="firstName">First Name:</label>
-                    <input type="text" name="firstName" id="firstName">
-
-                    <!--Last Name-->
-                    <label for="lastName">Last Name:</label>
-                    <input type="text" name="lastName" id="lastName">
-
-                    <!--Email-->
-                    <label for="email">Email:</label>
-                    <input type="email" name="email" id="email">
-
-                    <!--Company-->
-                    <label for="company">Company:</label>
-                    <input type="text" name="company" id="company">
-
-                    <!--Username-->
-                    <label for="username">Username:</label>
-                    <input type="text" name="username" id="username">
-
-                    <!--Password-->
-                    <label for="password">Password:</label>
-                    <input type="password" name="password" id="password">
-
-                    <!--Confirm Password-->
-                    <label for="password">Confirm Password:</label>
-                    <input type="password" name="confirm-password" id="confirm-password">
-
-                    <!--Register Button-->
-                    <button>Register</button>
-                </form>
-        </div>
-
-    <% } else { %>
-        <!--Account Button-->
-        <li class="navbar-item">
-            <a href="/Account">
-                <i class="fa-solid fa-user"></i> Account
-            </a>
         </li>
-
-        <!--Logout Button-->
-        <li class="navbar-item">
-            <a href="/Logout">
-                <i class="fa-solid fa-right-from-bracket"></i> Logout
-            </a>
-        </li>
-    <% } %>
-</ul>
+    
+        <% } else { %>
+            <!--Account Button-->
+            <li class="navbar-item">
+                <a href="/Account">
+                    <i class="fa-solid fa-user"></i> Account
+                </a>
+            </li>
+    
+            <!--Logout Button-->
+            <li class="navbar-item">
+                <a href="/Logout">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </a>
+            </li>
+        <% } %>
+    </ul>
+</div>
