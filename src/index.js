@@ -100,6 +100,24 @@ app.get("/GetQuotes", async (req, res) => {
   }
 });
 
+//Get Rates Route
+app.get("/GetRates", async (req, res) => {
+  //Check if the user is logged in.
+  checkLoggedIn(req, res);
+
+  try{
+    //Get the rates.
+    const rates = await rateModel.find({});
+
+    //Return the rates.
+    res.status(200).json({ message: "Success", rates: rates });
+
+  } catch(error){
+    res.status(401).json({ message: "Failed" });
+    console.error(error);
+  } 
+});
+
 /*---Post Routes---*/
 
 //Login Route
@@ -197,7 +215,7 @@ app.post("/UpdateUser", express.urlencoded({
   const username = req.session.currentuser;
   try{
     //Update the user data.
-    await userModel.findOneAndUpdate({username: username}, userData)
+    await userModel.findOneAndUpdate({username: username, password: req.body.currenntPassword}, userData)
 
     //Change the session variables.
     req.session.currentuser = userData.username;
@@ -221,13 +239,13 @@ app.post("/DeleteUser", express.urlencoded({
   //Get the current user.
   const username = req.session.currentuser;
   try{
-    await userModel.deleteOne({username: username});
+    await userModel.deleteOne({username: username, password: req.body.deletePassword});
 
     //Destroy the session.
     req.session.destroy();
 
-    //Delete successful.
-    res.status(200).json({ message: "Success" });
+    //Redirect to the home page.
+    res.redirect("/");
 
   } catch(error){
     res.status(401).json({ message: "Failed" });
@@ -387,11 +405,50 @@ app.post("/Calculator", express.urlencoded({
   extended: true
 }), async (req, res) => {
 
-  //Get project quote data from the form.
-  let totalCost = calculateQuote(req.body);
+  try{
+    //Get the rates.
+    const rates = await rateModel.find({});
 
-  //Return the total cost.
-  res.status(200).json({ message: "Success", cost: totalCost });
+    //Get project quote data from the form.
+    let totalCost = calculateQuote(req.body, rates[0]);
+
+    //Return the total cost.
+    res.status(200).json({ message: "Success", cost: totalCost });
+
+  } catch(error){
+    res.status(401).json({ message: "Failed" });
+    console.error(error);
+  }
+});
+
+//Update Rate Route
+app.post("/UpdateRate", express.urlencoded({
+  extended: true
+}), async (req, res) => {
+  //Check if the user is logged in.
+  checkLoggedIn(req, res);
+
+  //Get the user data from the form.
+  let rateData = {
+    "junior": req.body.junior,
+    "standard": req.body.standard,
+    "senior": req.body.senior,
+  }
+
+  try{
+    //Get the current rate.
+    const rate = (await rateModel.find({}))[0];
+
+    //Update the rate.
+    await rateModel.findOneAndUpdate({_id: rate._id}, rateData)
+
+    //Update successful.
+    res.status(200).json({ message: "Success" });
+
+  } catch(error){
+    res.status(401).json({ message: "Failed" });
+    console.error(error);
+  }
 });
 
 /*---Functions---*/
